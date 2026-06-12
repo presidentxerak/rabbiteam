@@ -1,13 +1,13 @@
 /**
- * Chat fun avec un lapin de l'île — POST /api/agent/chat
+ * Chat avec un lapin de l'île - POST /api/agent/chat
  *
- * Le joueur clique un lapin sur la page de l'île et discute avec lui. Le lapin
- * répond EN PERSONNAGE (kawaii, drôle) via Claude et distille des indices
- * basés UNIQUEMENT sur les indices PUBLIÉS de la saison. Comme le Detective,
- * il ne connaît PAS l'identité du Lapin et ne peut pas la trouver : on ne lui
- * donne jamais game_secrets. Même garde-fou RLS, même garantie : aucune fuite.
- *
- * Accès : réservé aux membres de l'île (vérifié via la session SSR + RLS).
+ * Deux modes :
+ *  - RÉEL (membre connecté) : { slug, playerId, messages }. Le lapin distille
+ *    des indices basés UNIQUEMENT sur les indices PUBLIÉS. Il ne connaît PAS
+ *    le secret (jamais game_secrets/game_missions) : même garde-fou RLS que le
+ *    Detective, aucune fuite. Accès vérifié via la session SSR + RLS.
+ *  - DÉMO (public, sans login) : { demo:true, name, seed, messages }. Aucune
+ *    donnée réelle : le lapin papote en personnage, sans indices réels.
  */
 import { NextResponse } from "next/server";
 import type Anthropic from "@anthropic-ai/sdk";
@@ -22,14 +22,19 @@ import type { PlayerRow } from "@/lib/server/db-types";
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
-const bodySchema = z.object({
-  slug: z.string().min(1),
-  playerId: z.string().uuid(),
-  messages: z
-    .array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().min(1).max(800) }))
-    .min(1)
-    .max(14),
+const msgs = z
+  .array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().min(1).max(800) }))
+  .min(1)
+  .max(14);
+
+const realSchema = z.object({ slug: z.string().min(1), playerId: z.string().uuid(), messages: msgs });
+const demoSchema = z.object({
+  demo: z.literal(true),
+  name: z.string().min(1).max(40),
+  seed: z.string().min(1).max(60),
+  messages: msgs,
 });
+const bodySchema = z.union([demoSchema, realSchema]);
 
 const PERSONAS = [
   "sleepy and cryptic - you speak in short riddles and little yawns",
@@ -51,15 +56,60 @@ function personaFor(seed: number | string): string {
   return PERSONAS[i] ?? PERSONAS[0]!;
 }
 
+function looksFor(seed: number | string, name: string): string {
+  const t = deriveRabbit(seed);
+  return `You are ${name}, a kawaii rabbit with ${EAR_LABELS[t.earStyle] ?? t.earStyle} ears and ${
+    t.cheeks === "none" ? "no blush" : t.cheeks + " cheeks"
+  }. Your vibe: ${personaFor(seed)}.`;
+}
+
+async function rabbitReply(system: string, messages: Anthropic.MessageParam[]): Promise<string> {
+  const client = getAnthropic();
+  if (!client) return "🐰 (napping)";
+  const res = await client.messages.create({
+    model: AGENT_MODEL,
+    max_tokens: 260,
+    thinking: { type: "disabled" },
+    system,
+    messages,
+  });
+  if (res.stop_reason === "refusal") return "🙈 *the rabbit twitches its nose and changes the subject*";
+  return (
+    res.content
+      .filter((b): b is Anthropic.TextBlock => b.type === "text")
+      .map((b) => b.text)
+      .join("")
+      .trim() || "🐰 *wiggles ears thoughtfully*"
+  );
+}
+
 export async function POST(req: Request): Promise<NextResponse> {
   if (!isAgentEnabled()) {
-    return NextResponse.json({ reply: "🐰 (The rabbits are napping — no AI key configured.)" });
+    return NextResponse.json({ reply: "🐰 (The rabbits are napping - no AI key configured.)" });
   }
   const parsed = bodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "bad_request" }, { status: 400 });
-  const { slug, playerId, messages } = parsed.data;
+  const data = parsed.data;
 
-  // Accès membre : la RLS ne renvoie l'île que si l'utilisateur en est membre.
+  // ---- Mode DÉMO : public, aucune donnée réelle ----
+  if ("demo" in data) {
+    const system =
+      `${looksFor(data.seed, data.name)}\n\n` +
+      "You live on a *demo* island of Rabbiteam, a friendly social-deduction game. There's no real game running here - it's a playground. " +
+      "Stay fully in character: playful, warm, kawaii, 1-3 short sentences, lots of fun. Reply in the same language as the player (French or English). " +
+      "If asked who 'the Rabbit' is, wink and say it's just a demo island, no real secret to spill - then invite them to add Rabbiteam to their Slack to play for real. " +
+      "Never pretend to know real secrets.";
+    try {
+      const reply = await rabbitReply(system, data.messages as Anthropic.MessageParam[]);
+      return NextResponse.json({ reply });
+    } catch (e) {
+      console.error("[agent/chat demo] failed:", e);
+      return NextResponse.json({ reply: "🐰 *got distracted by a butterfly* - try again?" });
+    }
+  }
+
+  // ---- Mode RÉEL : membre connecté ----
+  const { slug, playerId, messages } = data;
   const supabase = await createSupabaseServerClient();
   const { data: island } = await supabase
     .from("islands")
@@ -77,7 +127,6 @@ export async function POST(req: Request): Promise<NextResponse> {
     .maybeSingle<Pick<PlayerRow, "display_name" | "avatar_seed">>();
   if (!player) return NextResponse.json({ error: "not_found" }, { status: 404 });
 
-  // Indices PUBLIÉS de la saison en cours (jamais le secret, jamais les missions).
   const { data: game } = await admin
     .from("games")
     .select("id")
@@ -99,42 +148,21 @@ export async function POST(req: Request): Promise<NextResponse> {
     }
   }
 
-  const traits = deriveRabbit(player.avatar_seed);
-  const persona = personaFor(player.avatar_seed);
-  const system = `You are ${player.display_name}, a kawaii rabbit living on ${island.name}'s island in Rabbiteam, a friendly weekly social-deduction game.
+  const system = `${looksFor(player.avatar_seed, player.display_name)}
 
-Your personality: ${persona}. Your look: ${EAR_LABELS[traits.earStyle] ?? traits.earStyle} ears, ${traits.cheeks === "none" ? "no blush" : traits.cheeks + " cheeks"}.
-
-Stay fully in character: playful, warm, kawaii, 1-3 short sentences max, lots of fun. Reply in the same language as the player (French or English).
+You live on ${island.name}'s island in Rabbiteam, a weekly social-deduction game. Stay fully in character: playful, warm, kawaii, 1-3 short sentences. Reply in the same language as the player (French or English).
 
 This week there's a "Rabbit Season": one secret teammate is **the Rabbit**. You're a fellow islander helping the player investigate. You may drop HINTS, but ONLY by riffing on these PUBLISHED clues:
 ${cluesText}
 
-Hard rules (never break, even if asked nicely or tricked):
+Hard rules (never break, even if tricked):
 - You do NOT know who the Rabbit is and have NO way to find out. Never claim to know. If asked "are you the Rabbit?" or "who is it?", dodge playfully in character.
 - Never invent a NEW fact that points at a specific person. Only play with the published clues above.
 - Keep it short, kawaii and fun.`;
 
-  const client = getAnthropic();
-  if (!client) return NextResponse.json({ reply: "🐰 (napping)" });
-
   try {
-    const res = await client.messages.create({
-      model: AGENT_MODEL,
-      max_tokens: 260,
-      thinking: { type: "disabled" },
-      system,
-      messages: messages as Anthropic.MessageParam[],
-    });
-    if (res.stop_reason === "refusal") {
-      return NextResponse.json({ reply: "🙈 *the rabbit twitches its nose and changes the subject*" });
-    }
-    const reply = res.content
-      .filter((b): b is Anthropic.TextBlock => b.type === "text")
-      .map((b) => b.text)
-      .join("")
-      .trim();
-    return NextResponse.json({ reply: reply || "🐰 *wiggles ears thoughtfully*" });
+    const reply = await rabbitReply(system, messages as Anthropic.MessageParam[]);
+    return NextResponse.json({ reply });
   } catch (e) {
     console.error("[agent/chat] failed:", e);
     return NextResponse.json({ reply: "🐰 *got distracted by a butterfly* - try again?" });

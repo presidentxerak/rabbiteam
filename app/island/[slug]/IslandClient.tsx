@@ -244,7 +244,11 @@ export default function IslandClient(props: IslandClientProps) {
       )}
 
       {chatPlayer && (
-        <RabbitChat slug={props.slug} player={chatPlayer} onClose={() => setChatPlayer(null)} />
+        <RabbitChat
+          name={chatPlayer.name}
+          payload={{ slug: props.slug, playerId: chatPlayer.id }}
+          onClose={() => setChatPlayer(null)}
+        />
       )}
     </div>
   );

@@ -19,11 +19,17 @@ export function demoIslandEvents(): IslandEventLite[] {
   return events;
 }
 
-export const DEMO_RABBITS: { avatarSeed: string; equipped: Record<string, string> }[] = [
-  { avatarSeed: "demo-rabbit-1", equipped: { head: "beach_hat" } },
-  { avatarSeed: "demo-rabbit-2", equipped: { hand: "carrot_classic" } },
-  { avatarSeed: "demo-rabbit-3", equipped: { face: "heart_sunglasses" } },
-  { avatarSeed: "demo-rabbit-4", equipped: { neck: "flower_lei" } },
-  { avatarSeed: "demo-rabbit-5", equipped: { head: "flower_crown", hand: "coffee_mug" } },
-  { avatarSeed: "demo-rabbit-6", equipped: { aura: "fireflies" } },
+export interface DemoRabbit {
+  name: string;
+  avatarSeed: string;
+  equipped: Record<string, string>;
+}
+
+export const DEMO_RABBITS: DemoRabbit[] = [
+  { name: "Margaux", avatarSeed: "demo-rabbit-1", equipped: { head: "beach_hat" } },
+  { name: "Théo", avatarSeed: "demo-rabbit-2", equipped: { hand: "carrot_classic" } },
+  { name: "Léa", avatarSeed: "demo-rabbit-3", equipped: { face: "heart_sunglasses" } },
+  { name: "Sam", avatarSeed: "demo-rabbit-4", equipped: { neck: "flower_lei" } },
+  { name: "Inès", avatarSeed: "demo-rabbit-5", equipped: { head: "flower_crown", hand: "coffee_mug" } },
+  { name: "Noah", avatarSeed: "demo-rabbit-6", equipped: { aura: "fireflies" } },
 ];

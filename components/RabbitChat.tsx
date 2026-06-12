@@ -1,8 +1,9 @@
 "use client";
 
 /**
- * Fenêtre de chat avec un lapin de l'île. Discussion en personnage (Claude)
- * qui distille des indices basés sur les indices publiés - jamais le secret.
+ * Fenêtre de chat avec un lapin. `payload` décrit le mode (réel : {slug,
+ * playerId} ; démo : {demo:true, name, seed}) ; il est fusionné avec
+ * {messages} dans l'appel POST /api/agent/chat.
  */
 import { useEffect, useRef, useState } from "react";
 
@@ -12,16 +13,16 @@ interface Msg {
 }
 
 export default function RabbitChat({
-  slug,
-  player,
+  name,
+  payload,
   onClose,
 }: {
-  slug: string;
-  player: { id: string; name: string };
+  name: string;
+  payload: Record<string, unknown>;
   onClose: () => void;
 }) {
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", content: `Hi! I'm ${player.name} 🐰 Ask me anything about this week's Rabbit…` },
+    { role: "assistant", content: `Hi! I'm ${name} 🐰 Ask me anything about this week's Rabbit…` },
   ]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -37,18 +38,13 @@ export default function RabbitChat({
     setInput("");
     // On n'envoie PAS le message d'accueil local à l'API (le 1er doit être 'user').
     const history = messages.filter((m, i) => !(i === 0 && m.role === "assistant"));
-    const next: Msg[] = [...messages, { role: "user", content: text }];
-    setMessages(next);
+    setMessages((m) => [...m, { role: "user", content: text }]);
     setSending(true);
     try {
       const res = await fetch("/api/agent/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          slug,
-          playerId: player.id,
-          messages: [...history, { role: "user", content: text }],
-        }),
+        body: JSON.stringify({ ...payload, messages: [...history, { role: "user", content: text }] }),
       });
       const data = (await res.json()) as { reply?: string };
       setMessages((m) => [...m, { role: "assistant", content: data.reply ?? "🐰 *…*" }]);
@@ -62,7 +58,7 @@ export default function RabbitChat({
   return (
     <div className="rabbit-chat">
       <div className="rabbit-chat-head">
-        <span>🐰 {player.name}</span>
+        <span>🐰 {name}</span>
         <button onClick={onClose} aria-label="Close chat">
           ×
         </button>

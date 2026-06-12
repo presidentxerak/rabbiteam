@@ -13,6 +13,7 @@ import { canAddPlayer } from "@/lib/game-engine";
 import { checkReferralActivation } from "@/lib/server/referrals";
 import { isAgentEnabled } from "@/lib/agent/client";
 import { runDetective } from "@/lib/agent/detective";
+import { runDemoSeason, runDemoReveal, loadIslandCtx } from "@/lib/server/season";
 import { randomSeed } from "@/lib/prng";
 import type { GameRow, PlayerRow } from "@/lib/server/db-types";
 
@@ -58,10 +59,12 @@ export async function POST(req: Request): Promise<NextResponse> {
         case "island": case "ile": case "île": return await handleIle(ctx, cmd);
         case "invite": case "inviter": return await handleInviter(ctx, cmd);
         case "detective": case "ai": case "ia": return await handleDetective(ctx, cmd);
+        case "demo": case "start": return await handleDemo(ctx, cmd);
+        case "reveal": return await handleReveal(ctx, cmd);
         default:
           return await respond(
             cmd.response_url,
-            "🐰 *Commands*: `/rabbiteam setup #channel` · `standup` · `clue` · `unlock <n>` · `vote` · `detective <question>` · `island` · `invite`",
+            "🐰 *Commands*: `/rabbiteam setup #channel` · `demo` · `standup` · `clue` · `unlock <n>` · `vote` · `detective <question>` · `reveal` · `island` · `invite`",
           );
       }
     } catch (e) {
@@ -318,6 +321,45 @@ async function handleIle(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
     cmd.response_url,
     `🏝️ *${ctx.island.name}* - ${population ?? 0} rabbits · ${season}\n${APP_URL()}/island/${ctx.island.slug}`,
   );
+}
+
+// ============ /rabbiteam demo — démarre une saison MAINTENANT (démo live) ============
+
+async function handleDemo(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
+  await respond(cmd.response_url, "🎬 Spinning up a demo season (players, clues, voting)…");
+  const islandCtx = await loadIslandCtx(ctx.island);
+  if (!islandCtx) {
+    await respond(cmd.response_url, "Couldn't load the island context. Re-run `/rabbiteam setup`.");
+    return;
+  }
+  const msg = await runDemoSeason(islandCtx);
+  await respond(cmd.response_url, msg);
+}
+
+// ============ /rabbiteam reveal — force la révélation (démo) ============
+
+async function handleReveal(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
+  const admin = createSupabaseAdminClient();
+  const { data: game } = await admin
+    .from("games")
+    .select("id, status")
+    .eq("island_id", ctx.island.id)
+    .eq("status", "voting")
+    .order("week_start", { ascending: false })
+    .limit(1)
+    .maybeSingle<{ id: string; status: string }>();
+  if (!game) {
+    await respond(cmd.response_url, "No open vote to reveal. Start one with `/rabbiteam demo`.");
+    return;
+  }
+  await respond(cmd.response_url, "🎭 Closing the vote and revealing…");
+  const islandCtx = await loadIslandCtx(ctx.island);
+  if (!islandCtx) {
+    await respond(cmd.response_url, "Couldn't load the island context. Re-run `/rabbiteam setup`.");
+    return;
+  }
+  const msg = await runDemoReveal(islandCtx);
+  await respond(cmd.response_url, msg);
 }
 
 // ============ /rabbiteam detective <question> - Detective Agent (Claude) ============

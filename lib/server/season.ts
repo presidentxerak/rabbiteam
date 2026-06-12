@@ -20,6 +20,8 @@ import {
   type MissionLite,
   type VoteLite,
 } from "@/lib/game-engine";
+import { randomSeed } from "@/lib/prng";
+import { localTime } from "./time";
 import { generateClues } from "./clues";
 import { narrateClue } from "@/lib/agent/gamemaster";
 import {
@@ -602,4 +604,155 @@ export async function reveal(ctx: IslandCtx, day: string): Promise<void> {
     rabbitPlayerId: rabbitId,
     accusedPlayerId: topSuspect?.id ?? null,
   });
+}
+
+// ============ MODE DÉMO — démarrer une saison MAINTENANT ============
+//
+// Bypasse l'agenda (lundi 9h) et tous les garde-fous (≥4 joueurs, ≥1 standup,
+// limite de plan) pour une démo en direct. Peuple l'île de joueurs de démo
+// si besoin, tire un Lapin, publie les 3 indices immédiatement, marque 2
+// missions accomplies (pour qu'une victoire du Lapin soit possible), et ouvre
+// directement le vote. Rejouable : repart d'une saison neuve à chaque appel.
+
+const DEMO_NAMES = ["Margaux", "Théo", "Léa", "Sam", "Inès", "Noah", "Yuki", "Oli"];
+
+export async function runDemoSeason(ctx: IslandCtx): Promise<string> {
+  if (!ctx.island.slack_channel_id) {
+    return "Run `/rabbiteam setup #channel` first so I know where to post.";
+  }
+  const admin = createSupabaseAdminClient();
+  const today = localTime(new Date(), ctx.island.timezone).day;
+  const weekStart = mondayOfWeek(new Date(today + "T12:00:00Z"));
+
+  // 1. Roster : au moins 6 joueurs actifs (sème des joueurs de démo au besoin).
+  let players = await activePlayers(ctx.island.id);
+  if (players.length < 6) {
+    const need = 6 - players.length;
+    const rows = DEMO_NAMES.slice(0, need).map((name, i) => ({
+      island_id: ctx.island.id,
+      slack_user_id: `demo_${Date.now()}_${i}`,
+      display_name: name,
+      avatar_seed: randomSeed(),
+      is_active: true,
+    }));
+    const { data: inserted } = await admin.from("players").insert(rows).select("id");
+    // Événements pour faire vivre l'île (nouveaux membres + un peu d'activité).
+    for (const p of inserted ?? []) {
+      await admin.from("island_events").insert({
+        island_id: ctx.island.id,
+        type: "member_joined",
+        actor_player_id: p.id as string,
+      });
+    }
+    for (let i = 0; i < 12; i++) {
+      await admin.from("island_events").insert({
+        island_id: ctx.island.id,
+        type: i % 3 === 0 ? "kudo" : i % 3 === 1 ? "notion_page" : "standup",
+      });
+    }
+    players = await activePlayers(ctx.island.id);
+  }
+
+  // 2. Repart à neuf : supprime toute saison de la semaine (cascade) + le log.
+  await admin.from("games").delete().eq("island_id", ctx.island.id).eq("week_start", weekStart);
+  await admin.from("dispatch_log").delete().eq("island_id", ctx.island.id).eq("day", today);
+
+  // 3. Tire un Lapin (aléatoire, sans exigence de standup pour la démo).
+  const rabbit = players[Math.floor(Math.random() * players.length)];
+  if (!rabbit) return "No active players to run a demo. Run `/rabbiteam setup #channel` first.";
+
+  // 4. Crée la saison directement en statut 'voting' (jouable tout de suite).
+  const { data: game, error: gErr } = await admin
+    .from("games")
+    .insert({ island_id: ctx.island.id, week_start: weekStart, status: "voting" })
+    .select("*")
+    .single<GameRow>();
+  if (gErr || !game) return `Demo failed to create the season (${gErr?.code ?? "?"}).`;
+  await admin.from("game_secrets").insert({ game_id: game.id, rabbit_player_id: rabbit.id });
+
+  // 5. Missions (1 facile/moyenne/difficile) ; 2 marquées accomplies.
+  const { data: bank } = await admin
+    .from("missions")
+    .select("id, slug, tool, difficulty, brief_md, detection");
+  const missions = pickMissions((bank ?? []) as MissionLite[], [], Math.random);
+  if (!missions) return "Demo failed: mission bank empty (re-run the seed SQL).";
+  const { data: gm } = await admin
+    .from("game_missions")
+    .insert(missions.map((m) => ({ game_id: game.id, mission_id: m.id })))
+    .select("id");
+  const doneIds = (gm ?? []).slice(0, 2).map((r) => r.id as string);
+  if (doneIds.length) {
+    await admin
+      .from("game_missions")
+      .update({ status: "done", proof: { demo: true }, completed_at: new Date().toISOString() })
+      .in("id", doneIds);
+  }
+
+  // 6. Indices : générés, narrés (Game Master si clé IA), publiés immédiatement.
+  const locale = await islandLocale(ctx.orgId);
+  const clues = generateClues(rabbit, players, missions.map((m) => m.tool));
+  const narrated = await Promise.all(
+    clues.map(async (c) => ({ ...c, content: await narrateClue(c.content, locale) })),
+  );
+  const nowIso = new Date().toISOString();
+  await admin
+    .from("clues")
+    .insert(narrated.map((c) => ({ ...c, game_id: game.id, revealed_at: nowIso })));
+
+  // 7. DM secret au Lapin si c'est un vrai utilisateur Slack.
+  if (!rabbit.slack_user_id.startsWith("demo_")) {
+    const byId = new Map((bank ?? []).map((b) => [b.id as string, b]));
+    const dm = (gm ?? []).map((row, i) => {
+      const m = missions[i];
+      const def = m ? byId.get(m.id) : undefined;
+      return {
+        gameMissionId: row.id as string,
+        briefMd: (def?.brief_md as string) ?? "Slip something subtle into the team's tools.",
+        difficulty: (def?.difficulty as number) ?? 1,
+        detection: (def?.detection as string) ?? "honor",
+      };
+    });
+    await postDM(ctx.token, rabbit.slack_user_id, "🤫 (demo) You are the Rabbit.", rabbitMissionsDM(dm));
+  }
+
+  // 8. Annonces publiques + indices + ouverture du vote en Realtime.
+  await postMessage(
+    ctx.token,
+    ctx.island.slack_channel_id,
+    "🎬 *Demo season is live!* The Rabbit is among you, 3 clues are out, voting is open.",
+    [
+      section("🎬 *Demo season is live!* The Rabbit is among you."),
+      contextBlock(
+        "Try `/rabbiteam clue` to read the clues, `/rabbiteam detective <question>` to investigate with the AI, `/rabbiteam vote` to vote, then `/rabbiteam reveal` for the dramatic finale.",
+      ),
+    ],
+  );
+  for (const c of narrated) {
+    await postMessage(ctx.token, ctx.island.slack_channel_id, `🔍 Clue #${c.ordinal} - ${c.content}`);
+  }
+  await postMessage(
+    ctx.token,
+    ctx.island.slack_channel_id,
+    "🗳️ Voting is open.",
+    votingOpenBlocks(`${APP_URL()}/island/${ctx.island.slug}`),
+  );
+  await broadcastToIsland(ctx.island.id, "voting_open", { gameId: game.id });
+
+  return "🎬 Demo season started: clues published, voting open. Use `/rabbiteam vote` then `/rabbiteam reveal`.";
+}
+
+/** Démo : force la clôture + la révélation immédiatement (la séquence dramatique reste étalée). */
+export async function runDemoReveal(ctx: IslandCtx): Promise<string> {
+  const day = localTime(new Date(), ctx.island.timezone).day;
+  // Nettoie le verrou d'idempotence pour autoriser close+reveal maintenant.
+  const admin = createSupabaseAdminClient();
+  await admin
+    .from("dispatch_log")
+    .delete()
+    .eq("island_id", ctx.island.id)
+    .in("action", ["close_and_score", "reveal"])
+    .eq("day", day);
+  await closeAndScore(ctx, day);
+  await reveal(ctx, day);
+  return "🎭 Revealing… watch the channel and the island for the ceremony.";
 }

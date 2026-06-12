@@ -1,13 +1,18 @@
 :root {
   --sand: #f5e0b7;
   --water: #7ed6df;
-  --coral: #ff8c7a;
+  --coral: #ff6b57;
   --coral-deep: #e2574c;
   --cream: #fff6e8;
   --ink: #3a3340;
-  --ink-soft: #7a6f86;
-  --mint: #cdebd3;
-  --gold: #f2c14e;
+  --ink-soft: #6d6178;
+  --mint: #6bcb77;
+  --mint-soft: #cdebd3;
+  --gold: #ffd93d;
+  --sky: #4d96ff;
+  --violet: #9b5de5;
+  --bonbon: #f15bb5;
+  --mango: #ffb347;
 }
 
 * {
@@ -25,7 +30,13 @@ body {
     Roboto,
     sans-serif;
   color: var(--ink);
-  background: linear-gradient(180deg, #cff0f5 0%, #eafaf2 100%);
+  background: linear-gradient(
+    160deg,
+    #aee7f2 0%,
+    #c9f2e4 35%,
+    #fdeec9 70%,
+    #ffd9e3 100%
+  );
   min-height: 100vh;
 }
 
@@ -49,12 +60,14 @@ a {
   box-shadow: 0 8px 24px rgba(58, 51, 64, 0.18);
 }
 .btn-primary {
-  background: var(--coral);
+  background: linear-gradient(135deg, var(--coral) 0%, var(--mango) 100%);
   color: white;
+  box-shadow: 0 4px 16px rgba(255, 107, 87, 0.4);
 }
 .btn-ghost {
-  background: rgba(255, 255, 255, 0.8);
-  color: var(--ink);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--violet);
+  border: 2px solid var(--violet);
 }
 
 .card {
@@ -67,12 +80,13 @@ a {
 
 .tag {
   display: inline-block;
-  background: var(--mint);
+  background: linear-gradient(135deg, var(--mint-soft) 0%, #aee7f2 100%);
   color: var(--ink);
   border-radius: 999px;
-  padding: 4px 14px;
+  padding: 5px 16px;
   font-size: 13px;
   font-weight: 700;
+  border: 2px solid rgba(107, 203, 119, 0.4);
 }
 
 /* ===== Panneau latéral de l'île ===== */
@@ -202,42 +216,27 @@ a {
 /* Hackathon badge */
 .hackathon-badge {
   display: inline-block;
-  background: var(--ink);
-  color: var(--cream);
+  background: linear-gradient(135deg, var(--violet) 0%, var(--bonbon) 100%);
+  color: #fff;
   border-radius: 999px;
-  padding: 6px 18px;
+  padding: 7px 20px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.02em;
   margin-bottom: 14px;
+  box-shadow: 0 4px 16px rgba(155, 93, 229, 0.35);
 }
 
-/* Hero 3D rabbit + Rabbiteam 3D type */
+/* Hero 3D : titre Rabbiteam extrudé + mascotte, dans un seul canvas */
 .hero-rabbit {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 8px;
 }
-.logo3d {
-  font-size: clamp(46px, 11vw, 104px);
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  margin: 0 0 4px;
-  color: #fff;
-  background: linear-gradient(180deg, #ffb3a3 0%, #ff8c7a 55%, #e2574c 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  /* extrusion 3D simulée par empilement d'ombres */
-  filter: drop-shadow(0 2px 0 #c9463c) drop-shadow(0 4px 0 #b23c33)
-    drop-shadow(0 8px 14px rgba(58, 51, 64, 0.35));
-  transform: rotate(-2deg);
-  line-height: 1;
-}
 .hero-rabbit-stage {
-  width: min(260px, 70vw);
-  height: min(220px, 58vw);
+  width: min(620px, 92vw);
+  height: min(380px, 72vw);
   touch-action: none;
 }
 
@@ -255,13 +254,46 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: var(--coral);
+  background: linear-gradient(135deg, var(--coral) 0%, var(--bonbon) 100%);
   color: #fff;
   font-weight: 800;
   margin-bottom: 8px;
+  box-shadow: 0 3px 10px rgba(241, 91, 181, 0.35);
+}
+
+/* Cartes : liseré coloré tournant (corail, ciel, menthe, violet, mangue, bonbon) */
+.features .card,
+.how-steps .card {
+  border-top: 5px solid var(--coral);
+}
+.features .card:nth-of-type(2),
+.how-steps .card:nth-of-type(2) {
+  border-top-color: var(--sky);
+}
+.features .card:nth-of-type(3),
+.how-steps .card:nth-of-type(3) {
+  border-top-color: var(--mint);
+}
+.features .card:nth-of-type(4) {
+  border-top-color: var(--violet);
+}
+.features .card:nth-of-type(5) {
+  border-top-color: var(--mango);
+}
+.features .card:nth-of-type(6) {
+  border-top-color: var(--bonbon);
+}
+
+/* Titres de section plus joyeux */
+.how h2,
+#pricing h2 {
+  background: linear-gradient(90deg, var(--coral) 0%, var(--violet) 60%, var(--sky) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .features {

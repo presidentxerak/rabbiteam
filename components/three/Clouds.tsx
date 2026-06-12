@@ -1,55 +1,67 @@
 "use client";
 
 /**
- * Nuages kawaii flottant au-dessus de l'île : amas de sphères blanches
- * (meshToonMaterial), dérive lente seedée, petit visage souriant sur le
- * nuage le plus proche. 100% procédural, aucun asset.
+ * Nuages kawaii flottant au-dessus de l'île : gros amas dodus de sphères
+ * BLANC PUR (légèrement émissifs pour rester lumineux sous le toon shading),
+ * base aplatie façon dessin animé, dérive lente seedée. Le nuage le plus
+ * proche a un visage souriant et des joues roses. 100% procédural.
  */
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import type { Group } from "three";
 import { mulberry32, toSeed32 } from "@/lib/prng";
 
+const CLOUD_WHITE = "#FFFFFF";
+
+function CloudMat() {
+  // Émissif doux : le toon shading ne peut pas griser le nuage.
+  return <meshToonMaterial color={CLOUD_WHITE} emissive={CLOUD_WHITE} emissiveIntensity={0.35} />;
+}
+
 function Puff({ face = false }: { face?: boolean }) {
-  // Un nuage = 4-5 sphères agglutinées + (option) deux yeux et des joues.
+  // Silhouette cartoon : une rangée de bosses rondes + base aplatie.
+  const bumps: [number, number, number, number][] = [
+    // [x, y, z, rayon]
+    [0, 0.18, 0, 0.52],
+    [0.52, 0.05, 0.04, 0.42],
+    [-0.52, 0.04, -0.03, 0.4],
+    [0.26, 0.32, -0.06, 0.36],
+    [-0.27, 0.3, 0.05, 0.34],
+    [0.88, -0.06, 0, 0.28],
+    [-0.86, -0.07, 0, 0.26],
+  ];
   return (
     <group>
-      <mesh>
-        <sphereGeometry args={[0.5, 14, 14]} />
-        <meshToonMaterial color="#FFFFFF" />
-      </mesh>
-      <mesh position={[0.5, -0.05, 0]}>
-        <sphereGeometry args={[0.38, 14, 14]} />
-        <meshToonMaterial color="#FFFFFF" />
-      </mesh>
-      <mesh position={[-0.5, -0.05, 0.05]}>
-        <sphereGeometry args={[0.36, 14, 14]} />
-        <meshToonMaterial color="#FBFCFF" />
-      </mesh>
-      <mesh position={[0.18, 0.22, -0.05]}>
-        <sphereGeometry args={[0.32, 14, 14]} />
-        <meshToonMaterial color="#FFFFFF" />
-      </mesh>
-      <mesh position={[-0.18, 0.18, 0.05]}>
-        <sphereGeometry args={[0.3, 14, 14]} />
-        <meshToonMaterial color="#F4F8FF" />
+      {bumps.map(([x, y, z, r], i) => (
+        <mesh key={i} position={[x, y, z]}>
+          <sphereGeometry args={[r, 16, 16]} />
+          <CloudMat />
+        </mesh>
+      ))}
+      {/* base aplatie façon nuage de dessin animé */}
+      <mesh position={[0, -0.12, 0]} scale={[1, 0.32, 0.8]}>
+        <sphereGeometry args={[0.95, 16, 16]} />
+        <CloudMat />
       </mesh>
       {face && (
-        <group position={[0, 0.02, 0.42]}>
+        <group position={[0, 0.12, 0.52]}>
+          {/* yeux fermés heureux ^^ */}
           {[-1, 1].map((s) => (
-            <mesh key={s} position={[s * 0.16, 0.04, 0]}>
-              <sphereGeometry args={[0.035, 8, 8]} />
+            <mesh key={s} position={[s * 0.2, 0.06, 0]} rotation={[0, 0, Math.PI]}>
+              <torusGeometry args={[0.07, 0.018, 8, 12, Math.PI]} />
               <meshToonMaterial color="#3A3340" />
             </mesh>
           ))}
+          {/* joues roses bien visibles */}
           {[-1, 1].map((s) => (
-            <mesh key={`c${s}`} position={[s * 0.26, -0.06, 0]} scale={[1, 0.7, 0.3]}>
-              <sphereGeometry args={[0.05, 10, 10]} />
-              <meshToonMaterial color="#F9C6D0" transparent opacity={0.85} />
+            <mesh key={`c${s}`} position={[s * 0.34, -0.08, 0]} scale={[1, 0.75, 0.35]}>
+              <sphereGeometry args={[0.09, 12, 12]} />
+              <meshToonMaterial color="#FF9EB5" />
             </mesh>
           ))}
-          <mesh position={[0, -0.06, 0.02]} rotation={[0, 0, 0]}>
-            <torusGeometry args={[0.05, 0.012, 8, 12, Math.PI]} />
+          {/* petit sourire */}
+          <mesh position={[0, -0.06, 0.03]}>
+            <torusGeometry args={[0.07, 0.018, 8, 12, Math.PI]} />
             <meshToonMaterial color="#3A3340" />
           </mesh>
         </group>
@@ -58,16 +70,15 @@ function Puff({ face = false }: { face?: boolean }) {
   );
 }
 
-export function Clouds({ seed = "clouds", count = 5 }: { seed?: number | string; count?: number }) {
+export function Clouds({ seed = "clouds", count = 6 }: { seed?: number | string; count?: number }) {
   const group = useRef<Group>(null);
   const clouds = useMemo(() => {
     const rng = mulberry32(toSeed32(seed) ^ 0xc10d);
     return Array.from({ length: count }).map((_, i) => ({
-      angle: rng() * Math.PI * 2,
-      radius: 4.2 + rng() * 2.4,
-      height: 3.4 + rng() * 1.6,
-      scale: 0.7 + rng() * 0.8,
-      drift: 0.02 + rng() * 0.04,
+      angle: (i / count) * Math.PI * 2 + rng() * 0.8,
+      radius: 3.6 + rng() * 2.6,
+      height: 3.2 + rng() * 1.8,
+      scale: 0.8 + rng() * 0.9,
       bob: rng() * Math.PI * 2,
       face: i === 0, // un seul nuage a un visage, pour ne pas surcharger
     }));
@@ -91,7 +102,6 @@ function CloudInstance(props: {
   radius: number;
   height: number;
   scale: number;
-  drift: number;
   bob: number;
   face: boolean;
 }) {
@@ -105,6 +115,7 @@ function CloudInstance(props: {
     <group
       ref={ref}
       position={[Math.cos(props.angle) * props.radius, props.height, Math.sin(props.angle) * props.radius]}
+      rotation={[0, -props.angle + Math.PI / 2, 0]}
       scale={[props.scale, props.scale, props.scale]}
     >
       <Puff face={props.face} />

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "The async social game for teams: a kawaii 3D island that grows from your real work, and every week, a secret Rabbit to unmask. 3 minutes a day, inside Slack.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://rabbiteam.app"),
   openGraph: {
-    title: "Rabbiteam 🐰",
+    title: "Rabbiteam",
     description: "Kawaii 3D island + weekly social deduction, inside Slack.",
     type: "website",
   },

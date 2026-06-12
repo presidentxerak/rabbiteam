@@ -4,6 +4,8 @@
  */
 import LandingIsland from "@/components/LandingIsland";
 import HeroRabbit from "@/components/HeroRabbit";
+import MagicParticles from "@/components/MagicParticles";
+import AmbientMusic from "@/components/AmbientMusic";
 
 type SearchParams = Promise<{ ref?: string; installed?: string; error?: string }>;
 
@@ -26,6 +28,17 @@ function slackInstallUrl(ref?: string): string {
   return `https://slack.com/oauth/v2/authorize?${params.toString()}`;
 }
 
+const WEEK = [
+  { day: "MON", time: "9:00", title: "Season opens", body: "One active player is secretly drawn as The Rabbit and DM'd 3 missions (one easy, one medium, one hard) to slip into Slack, Notion or your tickets. Everyone else just sees “Season #N is open — the Rabbit is among you.”" },
+  { day: "DAILY", time: "9:30", title: "Standup", body: "A single non-spammy reminder. Post your intention in 30 seconds, earn 10 carrots (+ a streak bonus), and items drop at 3, 5 and every 10 days. People who already posted aren't pinged." },
+  { day: "TUE", time: "10:00", title: "Free clue #1", body: "A deliberately broad clue, generated from the Rabbit's public profile (avatar traits, name, seniority). The engine guarantees it still leaves at least 3 suspects — no one is fingered on day one." },
+  { day: "WED", time: "10:00", title: "Paid clue #2", body: "Sharper (leaves at least 2 suspects), unlocked individually for 30 carrots via /rabbiteam unlock. Whoever pays can bluff about what they learned — that social friction is the whole point." },
+  { day: "THU", time: "15:00", title: "Free clue #3 + recap", body: "The last free clue lands, plus a reminder that tomorrow is the vote. This is when the channel lights up." },
+  { day: "FRI", time: "11:00", title: "Voting opens", body: "Cast your vote in a Slack modal (changeable until 4pm). On the 3D island the rabbits gather in front of the house, in real time — you see who voted, never for whom." },
+  { day: "FRI", time: "16:00", title: "Voting closes & scoring", body: "The majority suspect is computed. A tie means no unmasking. The result is locked but kept secret for 30 more minutes." },
+  { day: "FRI", time: "16:30", title: "The reveal", body: "A dramatic 3-message Slack sequence, a spotlight and falling mask on the 3D island, the shareable Reveal Card, and the loot. Votes and missions become public — fuel for the after-party." },
+];
+
 export default async function LandingPage({ searchParams }: { searchParams: SearchParams }) {
   const { ref, installed, error } = await searchParams;
   const installUrl = slackInstallUrl(ref);
@@ -33,36 +46,38 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
   return (
     <main className="landing">
       <LandingIsland />
+      <MagicParticles />
+      <AmbientMusic />
 
       <header className="hero">
-        <div className="hackathon-badge">🏆 Anthropic × Motier — Hackathon</div>
+        <div className="hackathon-badge">Anthropic × Motier — Hackathon</div>
 
         <HeroRabbit />
 
-        <span className="tag">🐰 For teams of 5 to 50 people</span>
+        <span className="tag">For teams of 5 to 50 people</span>
         <h1>
           Your team has an island.
           <br />
-          And an impostor. 🏝️
+          And an impostor.
         </h1>
         <p className="sub">
           Rabbiteam turns your week into a game: a kawaii 3D island that grows from your team&apos;s
-          real work, a 30-second standup that pays in carrots, and every Monday… a teammate secretly
+          real work, a 30-second standup that pays in carrots, and every Monday, a teammate secretly
           named <strong>The Rabbit</strong>. Can you unmask them by Friday?
         </p>
         {installed && (
           <p className="tag" style={{ background: "#cdebd3" }}>
-            ✅ Installed! Type `/rabbiteam setup #channel` in Slack to get started.
+            Installed! Type `/rabbiteam setup #channel` in Slack to get started.
           </p>
         )}
         {error && (
           <p className="tag" style={{ background: "#ffd9d4" }}>
-            ⚠️ Installation failed, please try again.
+            Installation failed, please try again.
           </p>
         )}
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
           <a className="btn btn-primary" href={installUrl}>
-            Add to Slack 🥕
+            Add to Slack
           </a>
           <a className="btn btn-ghost" href="#how">
             How does it work?
@@ -70,7 +85,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
         </div>
         {ref && (
           <p style={{ marginTop: 16, color: "var(--ink-soft)" }}>
-            🥕✨ You arrived through a referral: at 5 active players, your island AND your referrer&apos;s
+            You arrived through a referral: at 5 active players, your island and your referrer&apos;s
             both receive the legendary Golden Carrot.
           </p>
         )}
@@ -82,7 +97,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
         <div className="how-steps">
           <div className="card">
             <span className="step-num">1</span>
-            <h3>🏝️ Ambient — daily, zero effort</h3>
+            <h3>Ambient — daily, zero effort</h3>
             <p>
               Slack messages, Notion pages, finished tickets: every real signal grows a flower, a
               lantern, a seashell on your 3D island. 100% collective cosmetics —{" "}
@@ -91,7 +106,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
           </div>
           <div className="card">
             <span className="step-num">2</span>
-            <h3>🥕 Ritual — daily, 30 seconds</h3>
+            <h3>Ritual — daily, 30 seconds</h3>
             <p>
               Each morning, drop your intention of the day and a mood. You earn carrots, your streak
               climbs, and rare items unlock. Your rabbit has never been this well dressed.
@@ -99,10 +114,10 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
           </div>
           <div className="card">
             <span className="step-num">3</span>
-            <h3>🕵️ Event — weekly, The Rabbit Season</h3>
+            <h3>Event — weekly, The Rabbit Season</h3>
             <p>
               Every Monday one player secretly becomes <strong>The Rabbit</strong> with 3 discreet
-              missions to slip into your real tools. Clues Tuesday, Wednesday (paid in carrots 😏) and
+              missions to slip into your real tools. Clues Tuesday, Wednesday (paid in carrots) and
               Thursday. Vote Friday 11am. Dramatic reveal on the island at 4:30pm.
             </p>
           </div>
@@ -111,28 +126,19 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
 
       {/* ===== A week with the Rabbit (full walkthrough) ===== */}
       <section className="week">
-        <h2 style={{ textAlign: "center", fontSize: 32 }}>A week with the Rabbit, hour by hour ⏰</h2>
+        <h2 style={{ textAlign: "center", fontSize: 32 }}>A week with the Rabbit, hour by hour</h2>
         <p className="sub" style={{ margin: "8px auto 28px", textAlign: "center" }}>
           Everything happens in Slack on your island&apos;s timezone. One automatic dispatcher runs
           the whole show — nothing for you to schedule.
         </p>
         <div className="timeline">
-          {[
-            { day: "MON", time: "9:00", emoji: "🐰", title: "Season opens", body: "One active player is secretly drawn as The Rabbit and DM'd 3 missions (one easy, one medium, one hard) to slip into Slack, Notion or your tickets. Everyone else just sees “Season #N is open — the Rabbit is among you.”" },
-            { day: "DAILY", time: "9:30", emoji: "☀️", title: "Standup", body: "A single non-spammy reminder. Post your intention in 30 seconds, earn 10 🥕 (+ a streak bonus), and items drop at 3, 5 and every 10 days. People who already posted aren't pinged." },
-            { day: "TUE", time: "10:00", emoji: "🔍", title: "Free clue #1", body: "A deliberately broad clue, generated from the Rabbit's public profile (avatar traits, name, seniority). The engine guarantees it still leaves at least 3 suspects — no one is fingered on day one." },
-            { day: "WED", time: "10:00", emoji: "💰", title: "Paid clue #2", body: "Sharper (leaves ≥2 suspects), unlocked individually for 30 🥕 via /rabbiteam unlock. Whoever pays can bluff about what they learned — that social friction is the whole point." },
-            { day: "THU", time: "15:00", emoji: "🕵️", title: "Free clue #3 + recap", body: "The last free clue lands, plus a reminder that tomorrow is the vote. This is when the channel lights up." },
-            { day: "FRI", time: "11:00", emoji: "🗳️", title: "Voting opens", body: "Cast your vote in a Slack modal (changeable until 4pm). On the 3D island the rabbits gather in front of the house, in real time — you see who voted, never for whom." },
-            { day: "FRI", time: "16:00", emoji: "🥁", title: "Voting closes & scoring", body: "The majority suspect is computed. A tie means no unmasking. The result is locked but kept secret for 30 more minutes." },
-            { day: "FRI", time: "16:30", emoji: "🎭", title: "The reveal", body: "A dramatic 3-message Slack sequence, a spotlight + falling mask on the 3D island, the shareable Reveal Card, and the loot. Votes and missions become public — fuel for the after-party." },
-          ].map((s, i) => (
+          {WEEK.map((s, i) => (
             <div key={i} className="tl-row">
               <div className="tl-when">
                 <span className="tl-day">{s.day}</span>
                 <span className="tl-time">{s.time}</span>
               </div>
-              <div className="tl-dot">{s.emoji}</div>
+              <div className="tl-dot" />
               <div className="tl-card">
                 <strong>{s.title}</strong>
                 <p>{s.body}</p>
@@ -145,15 +151,15 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
           <h3 style={{ textAlign: "center" }}>How the season is scored</h3>
           <div className="scoring-grid">
             <div className="card">
-              <h4>🔍 Detectives win</h4>
+              <h4>Detectives win</h4>
               <p>The majority vote correctly names the Rabbit. The team gets a rare item and the island grows a magnifier monument.</p>
             </div>
             <div className="card">
-              <h4>🐰 The Rabbit wins</h4>
+              <h4>The Rabbit wins</h4>
               <p>It escapes the vote <strong>and</strong> completed at least 2 of its 3 missions. A rabbit statue rises on the island.</p>
             </div>
             <div className="card">
-              <h4>😶 Draw</h4>
+              <h4>Draw</h4>
               <p>It escapes but hid too much (fewer than 2 missions). No loot — the anti-passivity rule that stops the Rabbit from simply doing nothing.</p>
             </div>
           </div>
@@ -162,21 +168,21 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
 
       <section className="features">
         <div className="card">
-          <h3>🔒 Secret guarded by the database</h3>
+          <h3>Secret guarded by the database</h3>
           <p>
             The Rabbit&apos;s identity is protected at the database level (Row Level Security): even a
             curious developer with the console open sees nothing. The suspense is technical.
           </p>
         </div>
         <div className="card">
-          <h3>⚡ 3 minutes a day, max</h3>
+          <h3>3 minutes a day, max</h3>
           <p>
             The game lives in Slack. The 3D island is the stage, not a chore. No extra meetings, no
             notification overload, no report to fill in.
           </p>
         </div>
         <div className="card">
-          <h3>🎁 A 100% in-game economy</h3>
+          <h3>A 100% in-game economy</h3>
           <p>
             No buying items with money. Everything is earned: streaks, victories, seasons played,
             referrals. The Golden Carrot has to be deserved.
@@ -186,7 +192,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
 
       {/* ===== Built on the agent loop (hackathon theme) ===== */}
       <section className="agentloop">
-        <h2 style={{ textAlign: "center", fontSize: 32 }}>Built on the agent loop 🤖</h2>
+        <h2 style={{ textAlign: "center", fontSize: 32 }}>Built on the agent loop</h2>
         <p className="sub" style={{ margin: "8px auto 28px", textAlign: "center" }}>
           Rabbiteam maps cleanly onto the four primitives of the Claude Agent SDK — and adds two
           real Claude agents on top.
@@ -194,27 +200,27 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
         <div className="primitives">
           <div className="card">
             <span className="prim-tag">Agent</span>
-            <h3>🎭 The Game Master</h3>
+            <h3>The Game Master</h3>
             <p>The hourly dispatcher runs the season: picks the Rabbit, deals missions, releases clues, scores the vote — and Claude narrates each clue in the team&apos;s voice.</p>
           </div>
           <div className="card">
             <span className="prim-tag">Environment</span>
-            <h3>🏝️ Slack + the island</h3>
+            <h3>Slack and the island</h3>
             <p>The team&apos;s real tools are the workspace: Slack messages, Notion pages, finished tickets — all feeding the 3D island the agents act on.</p>
           </div>
           <div className="card">
             <span className="prim-tag">Session</span>
-            <h3>🗓️ The Rabbit Season</h3>
+            <h3>The Rabbit Season</h3>
             <p>Each week is one stateful run, Monday 9am to Friday&apos;s reveal, with its own secret, missions, clues and votes.</p>
           </div>
           <div className="card">
             <span className="prim-tag">Events</span>
-            <h3>⚡ Standups, kudos, webhooks</h3>
-            <p>Every real signal is an event that grows the island and drives the loop — no polling, one cron, cost ≈ 0.</p>
+            <h3>Standups, kudos, webhooks</h3>
+            <p>Every real signal is an event that grows the island and drives the loop — no polling, one cron, cost near zero.</p>
           </div>
         </div>
         <div className="card agent-highlight">
-          <h3>🕵️ Detective Agent — and it literally can&apos;t cheat</h3>
+          <h3>Detective Agent — and it literally can&apos;t cheat</h3>
           <p>
             Type <code>/rabbiteam detective who has lop ears?</code> and a Claude agent investigates
             with you — reading the published clues, the roster, and the public 3D avatar traits via
@@ -242,7 +248,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
             </ul>
           </div>
           <div className="card" style={{ border: "3px solid var(--coral)" }}>
-            <h3>Team 🥕</h3>
+            <h3>Team</h3>
             <div className="price">
               €29 <small>/ month / island</small>
             </div>
@@ -270,7 +276,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
 
       {/* ===== FAQ ===== */}
       <section className="faq">
-        <h2 style={{ textAlign: "center", fontSize: 32 }}>Good questions 🤔</h2>
+        <h2 style={{ textAlign: "center", fontSize: 32 }}>Good questions</h2>
         <div className="faq-grid">
           <div className="card">
             <h4>Is my work being tracked or ranked?</h4>
@@ -318,7 +324,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
             <p>
               Almost nothing. Everything is event-driven — a single hourly dispatcher computes each
               island&apos;s local time and acts only when something is due. No always-on servers,
-              cost ≈ 0.
+              cost near zero.
             </p>
           </div>
         </div>
@@ -326,7 +332,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
 
       <footer style={{ textAlign: "center", marginTop: 72, color: "var(--ink-soft)" }}>
         <a className="btn btn-primary" href={installUrl}>
-          Add to Slack 🥕
+          Add to Slack
         </a>
         <p style={{ marginTop: 24 }}>
           Rabbiteam — the Rabbit is among you. · No individual metrics, ever.

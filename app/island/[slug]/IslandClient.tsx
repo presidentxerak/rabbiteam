@@ -105,7 +105,7 @@ export default function IslandClient(props: IslandClientProps) {
   const rabbits = props.players.map((p) => ({
     playerId: p.id,
     avatarSeed: p.avatarSeed,
-    name: voters.has(p.id) ? `${p.name} 🗳️✓` : p.name,
+    name: voters.has(p.id) ? `${p.name} (voted)` : p.name,
     equipped: p.id === props.me?.playerId ? equipped : p.equipped,
   }));
 
@@ -134,16 +134,16 @@ export default function IslandClient(props: IslandClientProps) {
           style={{ float: "right" }}
           onClick={() => setPanelOpen((o) => !o)}
         >
-          {panelOpen ? "−" : "🐰"}
+          {panelOpen ? "−" : "+"}
         </button>
         {panelOpen && (
           <>
-            <h1>🏝️ {props.name}</h1>
+            <h1>{props.name}</h1>
             <div style={{ color: "var(--ink-soft)" }}>
               {props.players.length} rabbits
               {props.me && (
                 <>
-                  {" "}· {props.me.carrots} 🥕 · streak {props.me.streak} {props.me.streak >= 3 ? "🔥" : ""}
+                  {" "}· {props.me.carrots} carrots · streak {props.me.streak}
                 </>
               )}
             </div>
@@ -151,17 +151,17 @@ export default function IslandClient(props: IslandClientProps) {
             <h2>Season</h2>
             <div className="clue-line">
               {gameStatus === "voting"
-                ? "🗳️ Voting is open! The rabbits are gathering…"
+                ? "Voting is open! The rabbits are gathering…"
                 : gameStatus === "active"
-                  ? "🐰 The Rabbit is among you."
+                  ? "The Rabbit is among you."
                   : gameStatus === "revealed"
-                    ? "🎭 Season revealed — debrief in progress."
+                    ? "Season revealed — debrief in progress."
                     : "No season this week."}
             </div>
             {voters.size > 0 && (
               <div className="clue-line">
                 {voters.size} vote{voters.size > 1 ? "s" : ""} cast{" "}
-                (who voted, never for whom 🤫)
+                (who voted, never for whom)
               </div>
             )}
 
@@ -170,7 +170,7 @@ export default function IslandClient(props: IslandClientProps) {
                 <h2>Clues</h2>
                 {props.clues.map((c) => (
                   <div key={c.ordinal} className="clue-line">
-                    🔍 #{c.ordinal} — {c.content}
+                    #{c.ordinal} — {c.content}
                   </div>
                 ))}
               </>
@@ -181,7 +181,7 @@ export default function IslandClient(props: IslandClientProps) {
                 <h2>My collection</h2>
                 {props.myItems.length === 0 && (
                   <div style={{ color: "var(--ink-soft)" }}>
-                    Do your standups, build streaks, items will drop. 🥕
+                    Do your standups, build streaks, items will drop.
                   </div>
                 )}
                 {[...myItemsBySlot.entries()].map(([slot, items]) => (
@@ -209,15 +209,15 @@ export default function IslandClient(props: IslandClientProps) {
       </aside>
 
       {gameStatus === "voting" && !ceremony && (
-        <div className="vote-banner">🗳️ Voting open in Slack: /rabbiteam vote</div>
+        <div className="vote-banner">Voting open in Slack: /rabbiteam vote</div>
       )}
       {ceremony && (
         <div className="vote-banner">
           {ceremony.result === "rabbit_win"
-            ? "🐰 The Rabbit escaped!"
+            ? "The Rabbit escaped!"
             : ceremony.result === "detectives_win"
-              ? "🔍 Unmasked!"
-              : "😶 Draw…"}
+              ? "Unmasked!"
+              : "Draw…"}
         </div>
       )}
     </div>

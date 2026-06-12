@@ -45,7 +45,7 @@ export async function generateMetadata({
     .limit(1)
     .maybeSingle<{ id: string }>();
   return {
-    title: `${island.name}'s island 🏝️ — Rabbiteam`,
+    title: `${island.name}'s island — Rabbiteam`,
     description: "Would your team survive the Rabbit?",
     openGraph: lastGame
       ? { images: [`${appUrl}/api/og/reveal/${lastGame.id}`] }
@@ -70,7 +70,7 @@ export default async function PublicIslandPage({
   if (!island) {
     return (
       <main className="join-page">
-        <h1>🌊 This island keeps its secrets</h1>
+        <h1>This island keeps its secrets</h1>
         <p>It doesn&apos;t exist, or its crew made it private.</p>
         <Link className="btn btn-primary" href="/">
           Create your team&apos;s island
@@ -97,7 +97,7 @@ export default async function PublicIslandPage({
         )}
       />
       <aside className="island-panel">
-        <h1>🏝️ {island.name}</h1>
+        <h1>{island.name}</h1>
         <div style={{ color: "var(--ink-soft)" }}>
           {island.population} rabbits · {island.seasons_played} Rabbit Season
           {island.seasons_played > 1 ? "s" : ""} played
@@ -107,7 +107,7 @@ export default async function PublicIslandPage({
           missions here…
         </p>
         <Link className="btn btn-primary" href="/" style={{ display: "block", textAlign: "center" }}>
-          Create your team&apos;s island 🥕
+          Create your team&apos;s island
         </Link>
       </aside>
     </div>

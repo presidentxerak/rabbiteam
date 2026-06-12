@@ -206,29 +206,30 @@ create table slack_events_processed (
 );
 
 -- ================================================================
--- VAULT — bot tokens Slack (jamais en clair en table)
+-- BOT TOKENS SLACK — table dédiée, accès service-role uniquement.
+-- (RLS activée + AUCUNE policy = invisible côté client, même garantie que
+-- game_secrets. Aucune dépendance Supabase Vault : la migration s'applique
+-- proprement sur tout projet.)
 -- ================================================================
-create or replace function store_slack_token(p_org_id uuid, p_token text)
-returns void language plpgsql security definer set search_path = public, vault as $$
-declare
-  v_name text := 'slack_bot_' || p_org_id::text;
-  v_id uuid;
-begin
-  select id into v_id from vault.secrets where name = v_name;
-  if v_id is null then
-    perform vault.create_secret(p_token, v_name);
-  else
-    perform vault.update_secret(v_id, p_token);
-  end if;
-end $$;
+create table slack_tokens (
+  org_id     uuid primary key references organizations(id) on delete cascade,
+  bot_token  text not null,
+  updated_at timestamptz not null default now()
+);
 
-create or replace function get_slack_token(p_org_id uuid)
-returns text language sql security definer stable set search_path = public, vault as $$
-  select decrypted_secret from vault.decrypted_secrets
-  where name = 'slack_bot_' || p_org_id::text limit 1;
+create or replace function store_slack_token(p_org_id uuid, p_token text)
+returns void language sql security definer set search_path = public as $$
+  insert into slack_tokens (org_id, bot_token, updated_at)
+  values (p_org_id, p_token, now())
+  on conflict (org_id) do update
+    set bot_token = excluded.bot_token, updated_at = now();
 $$;
 
--- Personne d'autre que le service role ne touche au Vault.
+create or replace function get_slack_token(p_org_id uuid)
+returns text language sql security definer stable set search_path = public as $$
+  select bot_token from slack_tokens where org_id = p_org_id;
+$$;
+
 revoke execute on function store_slack_token(uuid, text) from public, anon, authenticated;
 revoke execute on function get_slack_token(uuid) from public, anon, authenticated;
 grant execute on function store_slack_token(uuid, text) to service_role;
@@ -255,6 +256,7 @@ alter table standups               enable row level security;
 alter table referrals              enable row level security;  -- serveur uniquement
 alter table dispatch_log           enable row level security;  -- serveur uniquement
 alter table slack_events_processed enable row level security;  -- serveur uniquement
+alter table slack_tokens           enable row level security;  -- 🔒 aucune policy = service role only
 
 -- Helper : suis-je membre de cette île ? (SECURITY DEFINER pour éviter la récursion RLS)
 create or replace function is_island_member(p_island uuid)

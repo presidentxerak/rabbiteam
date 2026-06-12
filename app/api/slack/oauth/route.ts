@@ -54,11 +54,18 @@ export async function GET(req: Request): Promise<NextResponse> {
   const admin = createSupabaseAdminClient();
 
   // Idempotent : réinstallation = mise à jour du token, pas de doublon.
-  const { data: existingOrg } = await admin
+  const { data: existingOrg, error: selErr } = await admin
     .from("organizations")
     .select("id")
     .eq("slack_team_id", team.id)
     .maybeSingle<{ id: string }>();
+  if (selErr) {
+    // Cause la plus fréquente ici : migrations non appliquées (table absente,
+    // code 42P01) ou clé service-role / URL invalide. Visible dans les logs +
+    // dans l'URL de redirection pour diagnostiquer rapidement.
+    console.error("[oauth] org select failed:", selErr.code, selErr.message);
+    return NextResponse.redirect(`${appUrl}/?error=db&code=${selErr.code ?? "unknown"}`);
+  }
 
   let orgId: string;
   if (existingOrg) {
@@ -74,7 +81,8 @@ export async function GET(req: Request): Promise<NextResponse> {
       .select("id")
       .single<{ id: string }>();
     if (error || !org) {
-      return NextResponse.redirect(`${appUrl}/?error=org_create`);
+      console.error("[oauth] org create failed:", error?.code, error?.message);
+      return NextResponse.redirect(`${appUrl}/?error=org_create&code=${error?.code ?? "unknown"}`);
     }
     orgId = org.id;
 
@@ -83,13 +91,17 @@ export async function GET(req: Request): Promise<NextResponse> {
     const { data: slugTaken } = await admin
       .from("islands").select("id").eq("slug", slug).maybeSingle();
     if (slugTaken) slug = `${slug}-${Math.random().toString(36).slice(2, 6)}`;
-    await admin.from("islands").insert({
+    const { error: islandErr } = await admin.from("islands").insert({
       org_id: orgId,
       name: team.name,
       slug,
       seed: randomSeed(),
       slack_channel_id: "",
     });
+    if (islandErr) {
+      console.error("[oauth] island create failed:", islandErr.code, islandErr.message);
+      return NextResponse.redirect(`${appUrl}/?error=island_create&code=${islandErr.code ?? "unknown"}`);
+    }
 
     // Parrainage : ?state=ref_<island_id> posé par la landing
     const ref = parsed.data.state?.startsWith("ref_") ? parsed.data.state.slice(4) : null;
@@ -105,7 +117,12 @@ export async function GET(req: Request): Promise<NextResponse> {
     }
   }
 
-  await storeSlackToken(orgId, access_token);
+  try {
+    await storeSlackToken(orgId, access_token);
+  } catch (e) {
+    console.error("[oauth] storeSlackToken failed:", e);
+    return NextResponse.redirect(`${appUrl}/?error=token_store`);
+  }
 
   // DM d'onboarding à la personne qui vient d'installer l'app (authed_user).
   const installerId = accessParsed.data.authed_user?.id;

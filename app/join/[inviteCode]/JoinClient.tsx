@@ -55,7 +55,7 @@ export default function JoinClient(props: {
     <main className="join-page">
       <span className="tag">{props.islandName} island</span>
       <h1>
-        {props.displayName}, meet your rabbit. 🐰
+        {props.displayName}, meet your rabbit.
       </h1>
       <p style={{ color: "var(--ink-soft)", maxWidth: 480 }}>
         Born the moment you joined the island — one of a kind, computed forever. No one else has the
@@ -74,7 +74,7 @@ export default function JoinClient(props: {
       </div>
       <div style={{ marginTop: 24 }}>
         <button className="btn btn-primary" onClick={adopt} disabled={pending}>
-          {pending ? "Adopting…" : "This is my rabbit! 🥕"}
+          {pending ? "Adopting…" : "This is my rabbit!"}
         </button>
       </div>
       {error && <p style={{ color: "var(--coral-deep)" }}>{error}</p>}

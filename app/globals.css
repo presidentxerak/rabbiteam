@@ -44,30 +44,66 @@ a {
   color: var(--coral-deep);
 }
 
+/* Boutons style « jeu vidéo » : profondeur 3D (bord inférieur), rebond au
+   survol, enfoncement au clic, halo lumineux animé. */
 .btn {
+  position: relative;
   display: inline-block;
-  padding: 14px 28px;
+  padding: 14px 30px;
   border-radius: 999px;
   border: none;
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 0.01em;
   cursor: pointer;
   text-decoration: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transform: translateY(0);
+  transition:
+    transform 0.12s cubic-bezier(0.34, 1.6, 0.5, 1),
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
 }
 .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(58, 51, 64, 0.18);
+  transform: translateY(-4px) scale(1.05);
+}
+.btn:active {
+  transform: translateY(1px) scale(0.97);
+  transition-duration: 0.05s;
 }
 .btn-primary {
   background: linear-gradient(135deg, var(--coral) 0%, var(--mango) 100%);
   color: white;
-  box-shadow: 0 4px 16px rgba(255, 107, 87, 0.4);
+  /* le double box-shadow simule un bouton 3D (épaisseur + ombre portée) */
+  box-shadow:
+    0 5px 0 #c9463c,
+    0 10px 22px rgba(255, 107, 87, 0.45);
+}
+.btn-primary:hover {
+  box-shadow:
+    0 8px 0 #c9463c,
+    0 16px 32px rgba(255, 107, 87, 0.6),
+    0 0 26px rgba(255, 183, 71, 0.7);
+  filter: saturate(1.15) brightness(1.05);
+}
+.btn-primary:active {
+  box-shadow:
+    0 2px 0 #c9463c,
+    0 5px 14px rgba(255, 107, 87, 0.5);
 }
 .btn-ghost {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   color: var(--violet);
   border: 2px solid var(--violet);
+  box-shadow: 0 5px 0 rgba(155, 93, 229, 0.4), 0 10px 22px rgba(155, 93, 229, 0.18);
+}
+.btn-ghost:hover {
+  box-shadow:
+    0 8px 0 rgba(155, 93, 229, 0.5),
+    0 16px 30px rgba(155, 93, 229, 0.3),
+    0 0 22px rgba(155, 93, 229, 0.45);
+}
+.btn-ghost:active {
+  box-shadow: 0 2px 0 rgba(155, 93, 229, 0.4), 0 5px 12px rgba(155, 93, 229, 0.25);
 }
 
 .card {
@@ -190,9 +226,16 @@ a {
   z-index: 0;
   pointer-events: none;
 }
-.landing > *:not(.landing-bg) {
+.landing > *:not(.landing-bg):not(.magic-particles) {
   position: relative;
   z-index: 1;
+}
+/* Particules magiques : derrière le contenu, au-dessus de l'île de fond. */
+.magic-particles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 .hero {
   text-align: center;
@@ -227,17 +270,80 @@ a {
   box-shadow: 0 4px 16px rgba(155, 93, 229, 0.35);
 }
 
-/* Hero 3D : titre Rabbiteam extrudé + mascotte, dans un seul canvas */
+/* Hero : mascotte 3D + « Rabbiteam » en gros sous le lapin (dégradé titre) */
 .hero-rabbit {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 .hero-rabbit-stage {
-  width: min(620px, 92vw);
-  height: min(380px, 72vw);
+  width: min(420px, 80vw);
+  height: min(300px, 60vw);
   touch-action: none;
+}
+.logo-text {
+  font-size: clamp(48px, 11vw, 110px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin: -12px 0 4px;
+  background: linear-gradient(100deg, var(--coral) 0%, var(--bonbon) 38%, var(--violet) 64%, var(--sky) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 14px rgba(155, 93, 229, 0.25));
+}
+
+/* Bouton musique d'ambiance (flottant, bas-droite) */
+.music-toggle {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px 9px 13px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(58, 51, 64, 0.88);
+  backdrop-filter: blur(8px);
+  color: var(--cream);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(58, 51, 64, 0.3);
+  transition: transform 0.15s ease;
+}
+.music-toggle:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+.music-icon {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.music-icon span {
+  width: 3px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--gold);
+}
+.music-icon.playing span {
+  animation: eq 0.9s ease-in-out infinite;
+}
+.music-icon.playing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.music-icon.playing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+@keyframes eq {
+  0%, 100% { height: 5px; }
+  50% { height: 14px; }
 }
 
 /* How it works */
@@ -359,18 +465,20 @@ a {
   color: var(--ink);
 }
 .tl-dot {
-  flex: 0 0 44px;
-  height: 44px;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
   align-self: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
   border-radius: 50%;
-  font-size: 22px;
-  box-shadow: 0 3px 12px rgba(58, 51, 64, 0.12);
-  border: 3px solid var(--mint-soft);
+  background: radial-gradient(circle at 35% 30%, #fff 0 25%, var(--coral) 60%);
+  box-shadow: 0 0 0 4px rgba(255, 107, 87, 0.18), 0 3px 10px rgba(58, 51, 64, 0.15);
 }
+.tl-row:nth-child(2) .tl-dot { background: radial-gradient(circle at 35% 30%, #fff 0 25%, var(--gold) 60%); box-shadow: 0 0 0 4px rgba(255, 217, 61, 0.22), 0 3px 10px rgba(58,51,64,0.15); }
+.tl-row:nth-child(3) .tl-dot,
+.tl-row:nth-child(5) .tl-dot { background: radial-gradient(circle at 35% 30%, #fff 0 25%, var(--mint) 60%); box-shadow: 0 0 0 4px rgba(107, 203, 119, 0.22), 0 3px 10px rgba(58,51,64,0.15); }
+.tl-row:nth-child(6) .tl-dot,
+.tl-row:nth-child(7) .tl-dot { background: radial-gradient(circle at 35% 30%, #fff 0 25%, var(--sky) 60%); box-shadow: 0 0 0 4px rgba(77, 150, 255, 0.22), 0 3px 10px rgba(58,51,64,0.15); }
+.tl-row:nth-child(8) .tl-dot { background: radial-gradient(circle at 35% 30%, #fff 0 25%, var(--violet) 60%); box-shadow: 0 0 0 4px rgba(155, 93, 229, 0.22), 0 3px 10px rgba(58,51,64,0.15); }
 .tl-card {
   flex: 1;
   background: rgba(255, 255, 255, 0.9);
@@ -546,9 +654,9 @@ a {
     font-size: 13px;
   }
   .tl-dot {
-    flex-basis: 38px;
-    height: 38px;
-    font-size: 18px;
+    flex-basis: 18px;
+    width: 18px;
+    height: 18px;
   }
 }
 

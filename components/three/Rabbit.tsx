@@ -29,13 +29,14 @@ export interface RabbitProps {
 
 function Ear({ traits, side }: { traits: RabbitTraits; side: 1 | -1 }) {
   const { earStyle, bodyColor, earInner } = traits;
-  const h = earStyle === "giant" ? 0.85 : earStyle === "short" ? 0.32 : 0.6;
+  // Oreilles réduites de moitié pour un look plus rond et mignon.
+  const h = earStyle === "giant" ? 0.42 : earStyle === "short" ? 0.16 : 0.3;
   let rotZ = side * 0.15;
   if (earStyle === "lop") rotZ = side * 1.15;
   if (earStyle === "one_folded" && side === 1) rotZ = 1.3;
   if (earStyle === "twisted") rotZ = side * 0.45;
   return (
-    <group position={[side * 0.16, 0.62, 0]} rotation={[0, 0, rotZ]}>
+    <group position={[side * 0.16, 0.66, 0]} rotation={[0, 0, rotZ]}>
       <mesh position={[0, h / 2, 0]}>
         <capsuleGeometry args={[0.09, h, 6, 12]} />
         <meshToonMaterial color={bodyColor} />

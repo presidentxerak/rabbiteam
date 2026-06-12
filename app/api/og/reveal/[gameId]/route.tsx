@@ -21,7 +21,7 @@ function RabbitFlat({ traits, size }: { traits: RabbitTraits; size: number }) {
   const { bodyColor, bellyColor, earStyle, earInner, cheeks } = traits;
   const s = size / 230; // échelle (le dessin est pensé sur 230px de haut)
   const px = (n: number) => `${n * s}px`;
-  const earH = earStyle === "giant" ? 130 : earStyle === "short" ? 60 : 100;
+  const earH = earStyle === "giant" ? 65 : earStyle === "short" ? 30 : 50;
   const leftEarRot = earStyle === "lop" ? 28 : earStyle === "twisted" ? 12 : -8;
   const rightEarRot = earStyle === "one_folded" ? 34 : earStyle === "lop" ? -28 : 8;
   const cheekColor = cheeks === "peach" ? "#FFD9B8" : "#F9C6D0";
@@ -135,10 +135,10 @@ export async function GET(
 
   const verdict =
     game.result === "rabbit_win"
-      ? "🐰 The Rabbit escaped!"
+      ? "The Rabbit escaped!"
       : game.result === "detectives_win"
-        ? "🔍 Unmasked!"
-        : "😶 Draw";
+        ? "Unmasked!"
+        : "Draw";
   const bg =
     game.result === "rabbit_win" ? "#FFF3E2" : game.result === "detectives_win" ? "#E2F3FF" : "#F0EDF5";
   const traits = deriveRabbit(rabbit?.avatar_seed ?? 0);

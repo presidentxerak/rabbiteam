@@ -48,7 +48,7 @@ a {
 h1,
 h2,
 .logo-text {
-  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
 }
 
 /* Boutons style « jeu vidéo » : profondeur 3D (bord inférieur), rebond au

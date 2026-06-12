@@ -1,15 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Source_Serif_4 } from "next/font/google";
+// Police auto-hébergée (woff2 bundlé dans le repo) : aucune dépendance réseau
+// au build, contrairement à next/font/google. Serif éditorial proche de la
+// typo des présentations Anthropic (Tiempos étant commerciale).
+import "@fontsource/source-serif-4/600.css";
+import "@fontsource/source-serif-4/700.css";
 import "./globals.css";
-
-// Gros titres : serif éditorial proche de la typo des présentations Anthropic
-// (Tiempos étant commerciale, Source Serif 4 est l'équivalent open le plus proche).
-const displayFont = Source_Serif_4({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-display",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Rabbiteam - Would your team survive the Rabbit?",
@@ -31,7 +26,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={displayFont.variable}>
+    <html lang="en">
       <body>{children}</body>
     </html>
   );

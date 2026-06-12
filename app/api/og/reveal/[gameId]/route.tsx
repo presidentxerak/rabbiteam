@@ -12,73 +12,63 @@ import type { GameRow, PlayerRow } from "@/lib/server/db-types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+/**
+ * Lapin 2D plat construit 100% en <div> (flexbox + border-radius) : rendu
+ * fiable par Satori (next/og), contrairement au SVG brut. Mêmes traits que
+ * la 3D (deriveRabbit) pour rester cohérent.
+ */
 function RabbitFlat({ traits, size }: { traits: RabbitTraits; size: number }) {
-  const { bodyColor, bellyColor, earStyle, earInner, eyeStyle, cheeks } = traits;
-  const earH = earStyle === "giant" ? 95 : earStyle === "short" ? 40 : 70;
-  const earRot = earStyle === "lop" ? 50 : earStyle === "twisted" ? 18 : 0;
-  const rightEarRot = earStyle === "one_folded" ? 55 : earStyle === "lop" ? -50 : -earRot;
-  const eye = (cx: number) => {
-    switch (eyeStyle) {
-      case "sleepy":
-        return <path d={`M ${cx - 9} 118 Q ${cx} 126 ${cx + 9} 118`} stroke="#3A3340" strokeWidth={4} fill="none" />;
-      case "happy":
-        return <path d={`M ${cx - 9} 122 Q ${cx} 112 ${cx + 9} 122`} stroke="#3A3340" strokeWidth={4} fill="none" />;
-      case "star":
-        return <text x={cx} y={126} fontSize={22} textAnchor="middle">✦</text>;
-      case "hypno":
-        return (
-          <g>
-            <circle cx={cx} cy={118} r={9} fill="none" stroke="#3A3340" strokeWidth={3} />
-            <circle cx={cx} cy={118} r={4} fill="none" stroke="#3A3340" strokeWidth={2} />
-          </g>
-        );
-      case "sparkly":
-        return (
-          <g>
-            <circle cx={cx} cy={118} r={8} fill="#3A3340" />
-            <circle cx={cx + 3} cy={114} r={3} fill="#FFFFFF" />
-          </g>
-        );
-      default:
-        return <circle cx={cx} cy={118} r={7} fill="#3A3340" />;
-    }
-  };
+  const { bodyColor, bellyColor, earStyle, earInner, cheeks } = traits;
+  const s = size / 230; // échelle (le dessin est pensé sur 230px de haut)
+  const px = (n: number) => `${n * s}px`;
+  const earH = earStyle === "giant" ? 130 : earStyle === "short" ? 60 : 100;
+  const leftEarRot = earStyle === "lop" ? 28 : earStyle === "twisted" ? 12 : -8;
+  const rightEarRot = earStyle === "one_folded" ? 34 : earStyle === "lop" ? -28 : 8;
+  const cheekColor = cheeks === "peach" ? "#FFD9B8" : "#F9C6D0";
+
+  const ear = (rot: number, left: boolean) => (
+    <div
+      style={{
+        position: "absolute",
+        top: px(-earH + 36),
+        left: left ? px(34) : px(96),
+        width: px(34),
+        height: px(earH),
+        background: bodyColor,
+        borderRadius: px(18),
+        transform: `rotate(${rot}deg)`,
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "center",
+      }}
+    >
+      <div style={{ marginTop: px(12), width: px(16), height: px(earH - 34), background: earInner, borderRadius: px(10) }} />
+    </div>
+  );
+
   return (
-    <svg width={size} height={size} viewBox="0 0 200 230">
-      {/* oreilles */}
-      <g transform={`rotate(${earRot} 75 70)`}>
-        <ellipse cx={75} cy={70 - earH / 2} rx={16} ry={earH / 2 + 12} fill={bodyColor} />
-        <ellipse cx={75} cy={70 - earH / 2} rx={8} ry={earH / 2} fill={earInner} />
-      </g>
-      <g transform={`rotate(${rightEarRot} 125 70)`}>
-        <ellipse cx={125} cy={70 - earH / 2} rx={16} ry={earH / 2 + 12} fill={bodyColor} />
-        <ellipse cx={125} cy={70 - earH / 2} rx={8} ry={earH / 2} fill={earInner} />
-      </g>
-      {/* corps + tête */}
-      <ellipse cx={100} cy={175} rx={62} ry={50} fill={bodyColor} />
-      <ellipse cx={100} cy={185} rx={38} ry={32} fill={bellyColor} />
-      <circle cx={100} cy={110} r={52} fill={bodyColor} />
-      {/* yeux */}
-      {eye(80)}
-      {eyeStyle === "monocle_wink" ? (
-        <g>
-          <circle cx={120} cy={118} r={13} fill="none" stroke="#C9A227" strokeWidth={3} />
-          <path d="M 112 118 Q 120 124 128 118" stroke="#3A3340" strokeWidth={4} fill="none" />
-        </g>
-      ) : (
-        eye(120)
-      )}
-      {/* museau */}
-      <ellipse cx={100} cy={132} rx={6} ry={4} fill="#E8A0A8" />
-      <path d="M 100 136 L 100 142 M 94 146 Q 100 150 106 146" stroke="#3A3340" strokeWidth={3} fill="none" />
-      {/* joues */}
-      {cheeks !== "none" && (
-        <g>
-          <circle cx={64} cy={132} r={9} fill={cheeks === "peach" ? "#FFD9B8" : "#F9C6D0"} opacity={0.9} />
-          <circle cx={136} cy={132} r={9} fill={cheeks === "peach" ? "#FFD9B8" : "#F9C6D0"} opacity={0.9} />
-        </g>
-      )}
-    </svg>
+    <div style={{ position: "relative", width: px(164), height: px(230), display: "flex" }}>
+      {ear(leftEarRot, true)}
+      {ear(rightEarRot, false)}
+      {/* corps */}
+      <div style={{ position: "absolute", bottom: 0, left: px(10), width: px(144), height: px(120), background: bodyColor, borderRadius: px(72) }} />
+      <div style={{ position: "absolute", bottom: px(6), left: px(46), width: px(72), height: px(78), background: bellyColor, borderRadius: px(40) }} />
+      {/* tête */}
+      <div style={{ position: "absolute", top: px(28), left: px(20), width: px(124), height: px(124), background: bodyColor, borderRadius: px(64), display: "flex" }}>
+        {/* yeux */}
+        <div style={{ position: "absolute", top: px(54), left: px(30), width: px(16), height: px(16), background: "#3A3340", borderRadius: px(8) }} />
+        <div style={{ position: "absolute", top: px(54), left: px(78), width: px(16), height: px(16), background: "#3A3340", borderRadius: px(8) }} />
+        {/* museau */}
+        <div style={{ position: "absolute", top: px(74), left: px(56), width: px(12), height: px(9), background: "#E8A0A8", borderRadius: px(6) }} />
+        {/* joues */}
+        {cheeks !== "none" && (
+          <>
+            <div style={{ position: "absolute", top: px(70), left: px(12), width: px(20), height: px(14), background: cheekColor, borderRadius: px(10) }} />
+            <div style={{ position: "absolute", top: px(70), left: px(92), width: px(20), height: px(14), background: cheekColor, borderRadius: px(10) }} />
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 

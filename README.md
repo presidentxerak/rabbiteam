@@ -39,7 +39,7 @@ npm run dev
 2. Appliquer les migrations :
    ```bash
    supabase link --project-ref <ref>
-   supabase db push        # 0001_init.sql + 0002_seed.sql (42 items, 60 missions)
+   supabase db push        # 0001_init + 0002_seed (42 items, 60 missions) + 0003_slack_tokens
    ```
 3. Vérifier la forteresse RLS (DoD Phase 0) :
    ```bash
@@ -109,7 +109,7 @@ lib/
   slack/{verify,client,blocks}  HMAC, Web API, Block Kit
   server/                       orchestrateur (saison, standup, missions, parrainage)
   supabase/{server,client,admin}
-supabase/migrations/            0001 schéma + RLS + Vault, 0002 seed (généré)
+supabase/migrations/            0001 schéma + RLS, 0002 seed (généré), 0003 slack_tokens
 scripts/                        generate-seed, test-rls, simulate-week
 tests/game-engine.test.ts       40 tests Vitest
 ```
@@ -120,8 +120,27 @@ tests/game-engine.test.ts       40 tests Vitest
 requête PostgREST reçoit zéro ligne. `missions` et `game_missions` sont invisibles avant la
 révélation. Le trigger `guard_player_columns` empêche tout client de toucher aux carottes,
 streaks et seeds — seule la service role (serveur) fait bouger la monnaie. Le bot token Slack
-vit dans **Supabase Vault**, accessible uniquement via deux fonctions `security definer`
-réservées au service role.
+vit dans la table `slack_tokens` (RLS activée, **aucune policy** = même garantie que
+`game_secrets`), lue uniquement via deux fonctions `security definer` réservées au service role
+(migration `0003`).
+
+### Agents Claude (optionnels)
+
+Deux agents sont câblés sur l'API Claude (`@anthropic-ai/sdk`, `claude-opus-4-8`) et **gardés
+par `isAgentEnabled()`** : sans `ANTHROPIC_API_KEY`, tout retombe sur le comportement non-IA et
+l'app fonctionne à l'identique.
+
+- **Detective Agent** (`/rabbiteam detective <question>`) : boucle agentique avec tool use
+  (`get_published_clues`, `get_players`, `get_rabbit_traits`). Ses outils ne peuvent PAS lire
+  `game_secrets`/`game_missions` — la RLS s'applique aussi à l'agent. Même l'IA ne peut pas tricher.
+- **Game Master Agent** : `narrateClue` réécrit chaque indice de façon vivante sans changer les
+  faits ; la sûreté ≥ candidats reste garantie par le moteur pur.
+
+### Piloter une démo (cron)
+
+Le cron Vercel (`vercel.json`) ne se déclenche qu'une fois par jour sur le plan Hobby. Pour une
+démo en direct, piloter le dispatcher à la main avec `scripts/simulate-week.ts` (ou un simple
+`curl` sur `/api/cron/dispatcher?now=…` avec le header `Authorization: Bearer CRON_SECRET`).
 
 ### Règle d'or des lapins
 

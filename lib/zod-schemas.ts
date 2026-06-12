@@ -111,6 +111,7 @@ export const slackOAuthAccessSchema = z.object({
   access_token: z.string(),
   team: z.object({ id: z.string(), name: z.string() }),
   bot_user_id: z.string().optional(),
+  authed_user: z.object({ id: z.string() }).optional(),
 });
 
 // ============ Standup (soumission de modal) ============

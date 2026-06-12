@@ -5,7 +5,7 @@
  */
 import { NextResponse } from "next/server";
 import { createSupabaseAdminClient, storeSlackToken } from "@/lib/supabase/admin";
-import { slackApi } from "@/lib/slack/client";
+import { postDM } from "@/lib/slack/client";
 import { slackOAuthAccessSchema, slackOAuthQuerySchema } from "@/lib/zod-schemas";
 import { randomSeed } from "@/lib/prng";
 
@@ -107,13 +107,15 @@ export async function GET(req: Request): Promise<NextResponse> {
 
   await storeSlackToken(orgId, access_token);
 
-  // Message d'onboarding dans le DM de l'installateur n'est pas garanti ;
-  // on poste via le canal général si possible, sinon l'utilisateur verra
-  // les instructions sur la page de succès.
-  await slackApi(access_token, "chat.postMessage", {
-    channel: url.searchParams.get("installer") ?? "",
-    text: "🐰 Rabbiteam is installed! Pick your channel with `/rabbiteam setup #channel`.",
-  }).catch(() => undefined);
+  // DM d'onboarding à la personne qui vient d'installer l'app (authed_user).
+  const installerId = accessParsed.data.authed_user?.id;
+  if (installerId) {
+    await postDM(
+      access_token,
+      installerId,
+      "🐰 *Rabbiteam is installed!* Pick your channel with `/rabbiteam setup #channel` and the first Rabbit Season starts Monday 9am.",
+    ).catch(() => undefined);
+  }
 
   return NextResponse.redirect(`${appUrl}/?installed=1`);
 }

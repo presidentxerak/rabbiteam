@@ -109,6 +109,57 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
         </div>
       </section>
 
+      {/* ===== A week with the Rabbit (full walkthrough) ===== */}
+      <section className="week">
+        <h2 style={{ textAlign: "center", fontSize: 32 }}>A week with the Rabbit, hour by hour ⏰</h2>
+        <p className="sub" style={{ margin: "8px auto 28px", textAlign: "center" }}>
+          Everything happens in Slack on your island&apos;s timezone. One automatic dispatcher runs
+          the whole show — nothing for you to schedule.
+        </p>
+        <div className="timeline">
+          {[
+            { day: "MON", time: "9:00", emoji: "🐰", title: "Season opens", body: "One active player is secretly drawn as The Rabbit and DM'd 3 missions (one easy, one medium, one hard) to slip into Slack, Notion or your tickets. Everyone else just sees “Season #N is open — the Rabbit is among you.”" },
+            { day: "DAILY", time: "9:30", emoji: "☀️", title: "Standup", body: "A single non-spammy reminder. Post your intention in 30 seconds, earn 10 🥕 (+ a streak bonus), and items drop at 3, 5 and every 10 days. People who already posted aren't pinged." },
+            { day: "TUE", time: "10:00", emoji: "🔍", title: "Free clue #1", body: "A deliberately broad clue, generated from the Rabbit's public profile (avatar traits, name, seniority). The engine guarantees it still leaves at least 3 suspects — no one is fingered on day one." },
+            { day: "WED", time: "10:00", emoji: "💰", title: "Paid clue #2", body: "Sharper (leaves ≥2 suspects), unlocked individually for 30 🥕 via /rabbiteam unlock. Whoever pays can bluff about what they learned — that social friction is the whole point." },
+            { day: "THU", time: "15:00", emoji: "🕵️", title: "Free clue #3 + recap", body: "The last free clue lands, plus a reminder that tomorrow is the vote. This is when the channel lights up." },
+            { day: "FRI", time: "11:00", emoji: "🗳️", title: "Voting opens", body: "Cast your vote in a Slack modal (changeable until 4pm). On the 3D island the rabbits gather in front of the house, in real time — you see who voted, never for whom." },
+            { day: "FRI", time: "16:00", emoji: "🥁", title: "Voting closes & scoring", body: "The majority suspect is computed. A tie means no unmasking. The result is locked but kept secret for 30 more minutes." },
+            { day: "FRI", time: "16:30", emoji: "🎭", title: "The reveal", body: "A dramatic 3-message Slack sequence, a spotlight + falling mask on the 3D island, the shareable Reveal Card, and the loot. Votes and missions become public — fuel for the after-party." },
+          ].map((s, i) => (
+            <div key={i} className="tl-row">
+              <div className="tl-when">
+                <span className="tl-day">{s.day}</span>
+                <span className="tl-time">{s.time}</span>
+              </div>
+              <div className="tl-dot">{s.emoji}</div>
+              <div className="tl-card">
+                <strong>{s.title}</strong>
+                <p>{s.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="scoring">
+          <h3 style={{ textAlign: "center" }}>How the season is scored</h3>
+          <div className="scoring-grid">
+            <div className="card">
+              <h4>🔍 Detectives win</h4>
+              <p>The majority vote correctly names the Rabbit. The team gets a rare item and the island grows a magnifier monument.</p>
+            </div>
+            <div className="card">
+              <h4>🐰 The Rabbit wins</h4>
+              <p>It escapes the vote <strong>and</strong> completed at least 2 of its 3 missions. A rabbit statue rises on the island.</p>
+            </div>
+            <div className="card">
+              <h4>😶 Draw</h4>
+              <p>It escapes but hid too much (fewer than 2 missions). No loot — the anti-passivity rule that stops the Rabbit from simply doing nothing.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="features">
         <div className="card">
           <h3>🔒 Secret guarded by the database</h3>
@@ -213,6 +264,62 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
               <li>Cross-team archipelago (v2)</li>
               <li>SSO, central admin</li>
             </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FAQ ===== */}
+      <section className="faq">
+        <h2 style={{ textAlign: "center", fontSize: 32 }}>Good questions 🤔</h2>
+        <div className="faq-grid">
+          <div className="card">
+            <h4>Is my work being tracked or ranked?</h4>
+            <p>
+              No — and that&apos;s a hard rule. Real signals (messages, pages, finished tickets) only
+              ever feed <strong>collective cosmetics</strong> on the shared island. There is no
+              individual productivity metric, anywhere, ever. Kanban signals are aggregated per team,
+              never per person.
+            </p>
+          </div>
+          <div className="card">
+            <h4>How is the Rabbit&apos;s identity protected?</h4>
+            <p>
+              By Postgres, not by our front-end. The secret lives in a table with Row-Level Security
+              and <strong>no read policy at all</strong> — even an authenticated member crafting a
+              raw query gets zero rows. Missions stay invisible until the reveal, so you can&apos;t
+              just watch who&apos;s doing what.
+            </p>
+          </div>
+          <div className="card">
+            <h4>How much time does it take?</h4>
+            <p>
+              Under 3 minutes a day. The game lives in Slack; the 3D island is the stage you visit
+              when you want, not a chore. One 30-second standup, the odd clue, a Friday vote.
+            </p>
+          </div>
+          <div className="card">
+            <h4>What do we need to install?</h4>
+            <p>
+              Just the Slack app — “Add to Slack”, then <code>/rabbiteam setup #channel</code>. Every
+              member gets a magic link in DM and discovers their unique rabbit. Notion and Kanban are
+              optional extras.
+            </p>
+          </div>
+          <div className="card">
+            <h4>Can the AI Detective spoil the secret?</h4>
+            <p>
+              No. The Detective Agent reasons over published clues and public avatar traits via tool
+              use, but its tools <strong>cannot read the secret table</strong> — the same RLS wall
+              applies to it. Even the AI plays fair.
+            </p>
+          </div>
+          <div className="card">
+            <h4>What does it cost to run?</h4>
+            <p>
+              Almost nothing. Everything is event-driven — a single hourly dispatcher computes each
+              island&apos;s local time and acts only when something is due. No always-on servers,
+              cost ≈ 0.
+            </p>
           </div>
         </div>
       </section>

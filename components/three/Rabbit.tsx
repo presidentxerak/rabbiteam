@@ -25,6 +25,8 @@ export interface RabbitProps {
   scale?: number;
   /** Override l'expression (yeux) sans changer le reste du lapin - pour le hero animé. */
   expression?: EyeStyle;
+  /** Si fourni, le lapin devient cliquable (curseur main) → ouvre son chat. */
+  onSelect?: () => void;
 }
 
 function Ear({ traits, side }: { traits: RabbitTraits; side: 1 | -1 }) {
@@ -99,6 +101,7 @@ export function Rabbit({
   frozen = false,
   scale = 1,
   expression,
+  onSelect,
 }: RabbitProps) {
   const baseTraits = useMemo(() => deriveRabbit(avatarSeed), [avatarSeed]);
   const traits = useMemo<RabbitTraits>(
@@ -142,8 +145,20 @@ export function Rabbit({
       onPointerOver={(e) => {
         e.stopPropagation();
         setHovered(true);
+        if (onSelect) document.body.style.cursor = "pointer";
       }}
-      onPointerOut={() => setHovered(false)}
+      onPointerOut={() => {
+        setHovered(false);
+        if (onSelect) document.body.style.cursor = "auto";
+      }}
+      onClick={
+        onSelect
+          ? (e) => {
+              e.stopPropagation();
+              onSelect();
+            }
+          : undefined
+      }
     >
       {/* corps */}
       <mesh position={[0, 0.22, 0]}>
@@ -205,14 +220,16 @@ export function Rabbit({
             style={{
               background: "rgba(58,51,64,0.85)",
               color: "#FFFDF8",
-              padding: "2px 10px",
+              padding: "3px 11px",
               borderRadius: 12,
               fontSize: 13,
               whiteSpace: "nowrap",
               fontFamily: "sans-serif",
+              textAlign: "center",
             }}
           >
             {name}
+            {onSelect && <div style={{ fontSize: 10, opacity: 0.8 }}>click to chat</div>}
           </div>
         </Html>
       )}

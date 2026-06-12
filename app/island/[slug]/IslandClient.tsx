@@ -8,6 +8,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import RabbitChat from "@/components/RabbitChat";
 import type { CeremonyState } from "@/components/three/effects/RevealCeremony";
 import type { IslandEventLite } from "@/lib/island-builder";
 
@@ -55,6 +56,7 @@ export default function IslandClient(props: IslandClientProps) {
   const [ceremony, setCeremony] = useState<CeremonyState | null>(null);
   const [voters, setVoters] = useState<Set<string>>(new Set());
   const [panelOpen, setPanelOpen] = useState(true);
+  const [chatPlayer, setChatPlayer] = useState<{ id: string; name: string } | null>(null);
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
 
   // Realtime : seulement pendant vote/révélation.
@@ -126,6 +128,10 @@ export default function IslandClient(props: IslandClientProps) {
         rabbits={rabbits}
         gathered={gameStatus === "voting" || ceremony !== null}
         ceremony={ceremony}
+        onRabbitClick={(id) => {
+          const p = props.players.find((pl) => pl.id === id);
+          if (p) setChatPlayer({ id: p.id, name: p.name });
+        }}
       />
 
       <aside className={`island-panel${panelOpen ? "" : " collapsed"}`}>
@@ -219,6 +225,10 @@ export default function IslandClient(props: IslandClientProps) {
               ? "Unmasked!"
               : "Draw…"}
         </div>
+      )}
+
+      {chatPlayer && (
+        <RabbitChat slug={props.slug} player={chatPlayer} onClose={() => setChatPlayer(null)} />
       )}
     </div>
   );

@@ -291,6 +291,107 @@ h2,
   }
 }
 
+/* ===== Chat avec un lapin ===== */
+.rabbit-chat {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 30;
+  width: min(340px, calc(100vw - 32px));
+  height: min(460px, 70vh);
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 253, 248, 0.96);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 12px 44px rgba(58, 51, 64, 0.22);
+  overflow: hidden;
+  animation: pop 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+.rabbit-chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, var(--coral) 0%, var(--bonbon) 100%);
+}
+.rabbit-chat-head button {
+  background: rgba(255, 255, 255, 0.25);
+  border: none;
+  color: #fff;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.rabbit-chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rc-msg {
+  max-width: 82%;
+  padding: 9px 13px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.35;
+  word-wrap: break-word;
+}
+.rc-assistant {
+  align-self: flex-start;
+  background: var(--cream);
+  color: var(--ink);
+  border-bottom-left-radius: 5px;
+}
+.rc-user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--sky) 0%, var(--violet) 100%);
+  color: #fff;
+  border-bottom-right-radius: 5px;
+}
+.rc-typing {
+  opacity: 0.7;
+}
+.rabbit-chat-input {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid rgba(58, 51, 64, 0.08);
+}
+.rabbit-chat-input input {
+  flex: 1;
+  border: 2px solid rgba(58, 51, 64, 0.12);
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+.rabbit-chat-input input:focus {
+  border-color: var(--coral);
+}
+.rabbit-chat-input button {
+  border: none;
+  border-radius: 999px;
+  padding: 0 16px;
+  font-family: inherit;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, var(--coral) 0%, var(--mango) 100%);
+  cursor: pointer;
+}
+.rabbit-chat-input button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .vote-banner {
   position: absolute;
   bottom: 20px;

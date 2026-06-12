@@ -34,6 +34,8 @@ export interface IslandProps {
   ceremony?: CeremonyState | null;
   /** Lapins rassemblés devant la maison (fenêtre de vote). */
   gathered?: boolean;
+  /** Clic sur un lapin (ouvre le chat). Rend les lapins cliquables. */
+  onRabbitClick?: (playerId: string) => void;
 }
 
 function IslandItemMesh({ slug, index }: { slug: string; index: number }) {
@@ -157,6 +159,7 @@ export function Island({
   rabbits = [],
   ceremony = null,
   gathered = false,
+  onRabbitClick,
 }: IslandProps) {
   const scene = useMemo(() => buildIsland(seed, events, islandItems), [seed, events, islandItems]);
   const group = useRef<Group>(null);
@@ -240,6 +243,9 @@ export function Island({
             wander={!gathered}
             frozen={gathered}
             scale={0.85}
+            onSelect={
+              onRabbitClick && r.playerId ? () => onRabbitClick(r.playerId as string) : undefined
+            }
           />
         );
       })}

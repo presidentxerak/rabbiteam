@@ -8,7 +8,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 
-// Pentatonique majeure de Do (fréquences, Hz) — toujours consonant.
+// Pentatonique majeure de Do (fréquences, Hz) - toujours consonant.
 const NOTES = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5];
 
 export default function AmbientMusic() {

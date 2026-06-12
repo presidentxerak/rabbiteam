@@ -18,8 +18,8 @@ function sqlJson(obj: unknown): string {
 
 const lines: string[] = [
   "-- ============================================================",
-  "-- SEED — catalogue d'items + banque de missions",
-  "-- ⚠️ FICHIER GÉNÉRÉ par scripts/generate-seed.ts — ne pas éditer à la main.",
+  "-- SEED - catalogue d'items + banque de missions",
+  "-- ⚠️ FICHIER GÉNÉRÉ par scripts/generate-seed.ts - ne pas éditer à la main.",
   "-- ============================================================",
   "",
   `-- ${ITEMS_CATALOG.length} items`,

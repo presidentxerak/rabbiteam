@@ -1,7 +1,7 @@
 /**
  * Broadcast Realtime côté serveur via l'API REST (pas de websocket en
  * serverless). Les clients abonnés au channel `island:{id}` reçoivent
- * l'événement — uniquement pendant les fenêtres de vote/révélation.
+ * l'événement - uniquement pendant les fenêtres de vote/révélation.
  */
 import "server-only";
 

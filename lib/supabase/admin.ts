@@ -1,6 +1,6 @@
 /**
  * Client service-role : SERVEUR UNIQUEMENT (bypasse RLS).
- * Ne jamais importer depuis un composant client — le garde-fou
+ * Ne jamais importer depuis un composant client - le garde-fou
  * "server-only" fait échouer le build si ça arrive.
  */
 import "server-only";

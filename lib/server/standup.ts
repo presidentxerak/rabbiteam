@@ -63,7 +63,7 @@ export async function handleStandupSubmission(opts: {
     payload: { mood },
   });
 
-  const flame = newStreak >= 3 ? ` — streak ${newStreak} 🔥` : "";
+  const flame = newStreak >= 3 ? ` - streak ${newStreak} 🔥` : "";
   await postEphemeral(
     token,
     island.slack_channel_id,

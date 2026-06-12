@@ -1,6 +1,6 @@
 /**
  * Île privée (auth requise, membre de l'île). Toutes les lectures passent
- * par le client SSR avec la session utilisateur : la RLS fait le tri —
+ * par le client SSR avec la session utilisateur : la RLS fait le tri -
  * un non-membre ne voit même pas que l'île existe.
  */
 import Link from "next/link";

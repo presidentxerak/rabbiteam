@@ -2,7 +2,7 @@
  * Orchestrateur de la Saison du Lapin : exécute les décisions du moteur pur
  * (lib/game-engine.ts) contre Supabase + Slack.
  *
- * IDEMPOTENCE : chaque action commence par claimAction() — un insert dans
+ * IDEMPOTENCE : chaque action commence par claimAction() - un insert dans
  * dispatch_log avec on conflict do nothing. Si la ligne existe déjà, l'action
  * a déjà tourné aujourd'hui pour cette île : on s'arrête net. Un cron rejoué
  * ne produit jamais deux fois le même effet.
@@ -128,7 +128,7 @@ async function rabbitOf(gameId: string): Promise<string | null> {
   return data?.rabbit_player_id ?? null;
 }
 
-// ============ LUNDI 09:00 — startSeason ============
+// ============ LUNDI 09:00 - startSeason ============
 
 export async function startSeason(ctx: IslandCtx, day: string): Promise<void> {
   if (!(await claimAction(ctx.island.id, "start_season", day))) return;
@@ -155,7 +155,7 @@ export async function startSeason(ctx: IslandCtx, day: string): Promise<void> {
     return;
   }
 
-  // Limite de plan (free : 1 saison/mois) — upsell doux, pas de partie.
+  // Limite de plan (free : 1 saison/mois) - upsell doux, pas de partie.
   const monthStart = weekStart.slice(0, 8) + "01";
   const { count: seasonsThisMonth } = await admin
     .from("games")
@@ -223,7 +223,7 @@ export async function startSeason(ctx: IslandCtx, day: string): Promise<void> {
     await postMessage(
       ctx.token,
       ctx.island.slack_channel_id,
-      "🐰 No one dropped an intention last week — the Rabbit stays in the burrow. Do your standups, the season resumes next Monday!",
+      "🐰 No one dropped an intention last week - the Rabbit stays in the burrow. Do your standups, the season resumes next Monday!",
     );
     return;
   }
@@ -318,7 +318,7 @@ export async function startSeason(ctx: IslandCtx, day: string): Promise<void> {
   );
 }
 
-// ============ Jours ouvrés 09:30 — rappel standup ============
+// ============ Jours ouvrés 09:30 - rappel standup ============
 
 export async function standupReminder(ctx: IslandCtx, day: string): Promise<void> {
   if (!(await claimAction(ctx.island.id, "standup_reminder", day))) return;
@@ -335,12 +335,12 @@ export async function standupReminder(ctx: IslandCtx, day: string): Promise<void
   await postMessage(
     ctx.token,
     ctx.island.slack_channel_id,
-    "☀️ Today's standup — 30 seconds, carrots on the line.",
+    "☀️ Today's standup - 30 seconds, carrots on the line.",
     standupReminderBlocks(),
   );
 }
 
-// ============ MAR 10:00 / MER 10:00 / JEU 15:00 — indices ============
+// ============ MAR 10:00 / MER 10:00 / JEU 15:00 - indices ============
 
 export async function releaseClue(ctx: IslandCtx, day: string, ordinal: 1 | 2 | 3): Promise<void> {
   if (!(await claimAction(ctx.island.id, `release_clue_${ordinal}`, day))) return;
@@ -370,7 +370,7 @@ export async function releaseClue(ctx: IslandCtx, day: string, ordinal: 1 | 2 | 
     await postMessage(
       ctx.token,
       ctx.island.slack_channel_id,
-      `🔍 Clue #${ordinal} — ${clue.content}${extra}`,
+      `🔍 Clue #${ordinal} - ${clue.content}${extra}`,
       clueBlocks(ordinal, clue.content + extra, 0),
     );
   } else {
@@ -384,7 +384,7 @@ export async function releaseClue(ctx: IslandCtx, day: string, ordinal: 1 | 2 | 
   }
 }
 
-// ============ JEU 17:00 — garde-fou Lapin endormi ============
+// ============ JEU 17:00 - garde-fou Lapin endormi ============
 
 export async function checkSleepingRabbit(ctx: IslandCtx, day: string): Promise<void> {
   if (!(await claimAction(ctx.island.id, "check_sleeping_rabbit", day))) return;
@@ -410,12 +410,12 @@ export async function checkSleepingRabbit(ctx: IslandCtx, day: string): Promise<
     await postMessage(
       ctx.token,
       ctx.island.slack_channel_id,
-      "😴 The Rabbit fell asleep in its burrow. Blank season — see you Monday for a fresh one. 🐰",
+      "😴 The Rabbit fell asleep in its burrow. Blank season - see you Monday for a fresh one. 🐰",
     );
   }
 }
 
-// ============ VEN 11:00 — ouverture du vote ============
+// ============ VEN 11:00 - ouverture du vote ============
 
 export async function openVoting(ctx: IslandCtx, day: string): Promise<void> {
   if (!(await claimAction(ctx.island.id, "open_voting", day))) return;
@@ -433,7 +433,7 @@ export async function openVoting(ctx: IslandCtx, day: string): Promise<void> {
   await broadcastToIsland(ctx.island.id, "voting_open", { gameId: game.id });
 }
 
-// ============ VEN 15:30 — rappel non-votants ============
+// ============ VEN 15:30 - rappel non-votants ============
 
 export async function voteReminder(ctx: IslandCtx, day: string): Promise<void> {
   if (!(await claimAction(ctx.island.id, "vote_reminder", day))) return;
@@ -450,11 +450,11 @@ export async function voteReminder(ctx: IslandCtx, day: string): Promise<void> {
   await postMessage(
     ctx.token,
     ctx.island.slack_channel_id,
-    `⏰ Last half hour to vote: ${mentions} — \`/rabbiteam vote\``,
+    `⏰ Last half hour to vote: ${mentions} - \`/rabbiteam vote\``,
   );
 }
 
-// ============ VEN 16:00 — clôture & score ============
+// ============ VEN 16:00 - clôture & score ============
 
 export async function closeAndScore(ctx: IslandCtx, day: string): Promise<void> {
   if (!(await claimAction(ctx.island.id, "close_and_score", day))) return;
@@ -493,7 +493,7 @@ export async function closeAndScore(ctx: IslandCtx, day: string): Promise<void> 
   );
 }
 
-// ============ VEN 16:30 — révélation ============
+// ============ VEN 16:30 - révélation ============
 
 export async function reveal(ctx: IslandCtx, day: string): Promise<void> {
   if (!(await claimAction(ctx.island.id, "reveal", day))) return;

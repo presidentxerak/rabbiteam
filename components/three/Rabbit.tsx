@@ -23,7 +23,7 @@ export interface RabbitProps {
   /** Mise en scène (vote/cérémonie) : fige le lapin face caméra. */
   frozen?: boolean;
   scale?: number;
-  /** Override l'expression (yeux) sans changer le reste du lapin — pour le hero animé. */
+  /** Override l'expression (yeux) sans changer le reste du lapin - pour le hero animé. */
   expression?: EyeStyle;
 }
 

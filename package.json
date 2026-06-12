@@ -9,7 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "setup-sql": "node -e \"const fs=require('fs');const h='-- ============================================================\\n-- RABBITEAM - SETUP COMPLET EN UN FICHIER\\n-- Colle l\\u0027intégralité de ce fichier dans Supabase → SQL Editor → Run.\\n-- (Généré par npm run setup-sql : 0001_init + 0002_seed concaténés.)\\n-- ============================================================\\n\\n';fs.writeFileSync('supabase/setup-all.sql',h+fs.readFileSync('supabase/migrations/0001_init.sql')+'\\n'+fs.readFileSync('supabase/migrations/0002_seed.sql'))\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",

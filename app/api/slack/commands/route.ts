@@ -150,7 +150,7 @@ async function handleSetup(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
 async function handleStandup(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   const player = await resolvePlayer(ctx.island.id, cmd.user_id);
   if (!player) {
-    await respond(cmd.response_url, "You don't have a rabbit here yet — ask your team to run `/rabbiteam setup` 🐰");
+    await respond(cmd.response_url, "You don't have a rabbit here yet - ask your team to run `/rabbiteam setup` 🐰");
     return;
   }
   await openModal(ctx.token, cmd.trigger_id, standupModal(ctx.island.id));
@@ -192,10 +192,10 @@ async function handleIndice(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   for (const c of clues ?? []) {
     const ordinal = c.ordinal as number;
     if (c.revealed_at || unlocked.has(ordinal)) {
-      lines.push(`• Clue #${ordinal} — ${c.content}`);
+      lines.push(`• Clue #${ordinal} - ${c.content}`);
       any = true;
     } else if (c.tier === "paid") {
-      lines.push(`• Clue #${ordinal} — 🔒 unlock (${c.price} 🥕): \`/rabbiteam unlock ${ordinal}\` or via the web island`);
+      lines.push(`• Clue #${ordinal} - 🔒 unlock (${c.price} 🥕): \`/rabbiteam unlock ${ordinal}\` or via the web island`);
       any = true;
     }
   }
@@ -203,7 +203,7 @@ async function handleIndice(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   await respond(cmd.response_url, lines.join("\n"));
 }
 
-// ============ /rabbiteam debloquer <n> — achat d'indice payant ============
+// ============ /rabbiteam debloquer <n> - achat d'indice payant ============
 
 async function handleDebloquer(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   const admin = createSupabaseAdminClient();
@@ -244,7 +244,7 @@ async function handleDebloquer(ctx: SlackCtx, cmd: SlackCommand): Promise<void> 
     .eq("player_id", player.id)
     .maybeSingle();
   if (already) {
-    await respond(cmd.response_url, `🔓 Already unlocked — ${clue.content}`);
+    await respond(cmd.response_url, `🔓 Already unlocked - ${clue.content}`);
     return;
   }
   if (player.carrots < clue.price) {
@@ -258,7 +258,7 @@ async function handleDebloquer(ctx: SlackCtx, cmd: SlackCommand): Promise<void> 
     player_id: player.id,
     paid: clue.price,
   });
-  await respond(cmd.response_url, `🔓 *Clue #${ordinal}* — ${clue.content}\n(-${clue.price} 🥕. What you tell the team… that's your business 😏)`);
+  await respond(cmd.response_url, `🔓 *Clue #${ordinal}* - ${clue.content}\n(-${clue.price} 🥕. What you tell the team… that's your business 😏)`);
 }
 
 // ============ /rabbiteam vote ============
@@ -316,11 +316,11 @@ async function handleIle(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
     : "no season this week";
   await respond(
     cmd.response_url,
-    `🏝️ *${ctx.island.name}* — ${population ?? 0} rabbits · ${season}\n${APP_URL()}/island/${ctx.island.slug}`,
+    `🏝️ *${ctx.island.name}* - ${population ?? 0} rabbits · ${season}\n${APP_URL()}/island/${ctx.island.slug}`,
   );
 }
 
-// ============ /rabbiteam detective <question> — Detective Agent (Claude) ============
+// ============ /rabbiteam detective <question> - Detective Agent (Claude) ============
 
 async function handleDetective(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   if (!isAgentEnabled()) {
@@ -341,7 +341,7 @@ async function handleDetective(ctx: SlackCtx, cmd: SlackCommand): Promise<void> 
   const answer = await runDetective({ islandId: ctx.island.id, question });
   await respond(
     cmd.response_url,
-    answer ?? "🕵️ The Detective couldn't reach a conclusion right now — try again in a moment.",
+    answer ?? "🕵️ The Detective couldn't reach a conclusion right now - try again in a moment.",
   );
 }
 
@@ -350,7 +350,7 @@ async function handleDetective(ctx: SlackCtx, cmd: SlackCommand): Promise<void> 
 async function handleInviter(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   await respond(
     cmd.response_url,
-    `🥕✨ *Golden Carrot referral* — share this link:\n${APP_URL()}/?ref=${ctx.island.id}\n` +
+    `🥕✨ *Golden Carrot referral* - share this link:\n${APP_URL()}/?ref=${ctx.island.id}\n` +
       "When a team installs via this link and reaches 5 active players, " +
       "your WHOLE island (and theirs) receives the legendary Golden Carrot + a golden palm. 🌴",
   );

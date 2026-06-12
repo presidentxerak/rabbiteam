@@ -2,7 +2,7 @@
 
 /**
  * Lien magique : à la première visite web, on lie le joueur Slack à un
- * compte Supabase (session anonyme) — son lapin devient le sien.
+ * compte Supabase (session anonyme) - son lapin devient le sien.
  */
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";

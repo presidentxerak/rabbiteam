@@ -53,7 +53,7 @@ export const ITEMS_CATALOG: ItemDef[] = [
   { slug: "beach_racket", name: "Beach paddle", slot: "hand", rarity: "uncommon", params: { shape: "racket", color: "#FF8C7A", grip: "#EBD8C3" }, unlockHint: "Team victory" },
   { slug: "magnifier", name: "Detective's magnifier", slot: "hand", rarity: "rare", params: { shape: "magnifier", color: "#F2C14E", glass: "#C8E6F5" }, unlockHint: "Detectives' victory" },
   { slug: "bubble_wand", name: "Bubble wand", slot: "hand", rarity: "rare", params: { shape: "wand", color: "#D9C7F2", bubbles: "#C8E6F5" }, unlockHint: "Rabbit victory" },
-  { slug: "golden_carrot", name: "Golden Carrot", slot: "hand", rarity: "legendary", params: { shape: "carrot", color: "#F2C14E", leaf: "#FFE9A0", glow: true }, unlockHint: "Validated referral — for the whole island 🥕✨" },
+  { slug: "golden_carrot", name: "Golden Carrot", slot: "hand", rarity: "legendary", params: { shape: "carrot", color: "#F2C14E", leaf: "#FFE9A0", glow: true }, unlockHint: "Validated referral - for the whole island 🥕✨" },
 
   // ============ AURA (6) ============
   { slug: "sparkles", name: "Sparkles", slot: "aura", rarity: "common", params: { kind: "sparkles", color: "#FFF3CF", count: 8 }, unlockHint: "Standup streak" },
@@ -63,7 +63,7 @@ export const ITEMS_CATALOG: ItemDef[] = [
   { slug: "stars", name: "Stars", slot: "aura", rarity: "epic", params: { kind: "stars", color: "#FFE9A0", count: 6 }, unlockHint: "Seasons-played milestone" },
   { slug: "rainbow", name: "Rainbow", slot: "aura", rarity: "legendary", params: { kind: "rainbow", colors: ["#F2A9A0", "#FFE9A0", "#CDEBD3", "#C8E6F5", "#D9C7F2"] }, unlockHint: "??? (very rare)" },
 
-  // ============ ISLAND (8) — upgrades visible to everyone ============
+  // ============ ISLAND (8) - upgrades visible to everyone ============
   { slug: "house_garland", name: "House garland", slot: "island", rarity: "common", params: { kind: "garland", colors: ["#F6C6D8", "#FFF3CF", "#C8E6F5"] }, unlockHint: "Detectives' victory" },
   { slug: "campfire", name: "Campfire", slot: "island", rarity: "common", params: { kind: "campfire", flame: "#FF8C42", wood: "#6B4F3A" }, unlockHint: "4 seasons played" },
   { slug: "giant_buoy", name: "Giant buoy", slot: "island", rarity: "uncommon", params: { kind: "buoy", colors: ["#FF8C7A", "#FFFDF8"] }, unlockHint: "Team victory" },

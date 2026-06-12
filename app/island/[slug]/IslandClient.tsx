@@ -155,7 +155,7 @@ export default function IslandClient(props: IslandClientProps) {
                 : gameStatus === "active"
                   ? "The Rabbit is among you."
                   : gameStatus === "revealed"
-                    ? "Season revealed — debrief in progress."
+                    ? "Season revealed - debrief in progress."
                     : "No season this week."}
             </div>
             {voters.size > 0 && (
@@ -170,7 +170,7 @@ export default function IslandClient(props: IslandClientProps) {
                 <h2>Clues</h2>
                 {props.clues.map((c) => (
                   <div key={c.ordinal} className="clue-line">
-                    #{c.ordinal} — {c.content}
+                    #{c.ordinal} - {c.content}
                   </div>
                 ))}
               </>

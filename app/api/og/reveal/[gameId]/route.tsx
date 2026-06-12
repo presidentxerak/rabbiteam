@@ -122,12 +122,12 @@ export async function GET(
   if (game.result === "rabbit_win") {
     stat =
       top - rabbitVotes <= 1 && top > 0
-        ? `The Rabbit survived ${rabbitVotes} votes — by a carrot's whisker`
+        ? `The Rabbit survived ${rabbitVotes} votes - by a carrot's whisker`
         : `${votes?.length ?? 0} votes, zero flair: the Rabbit slipped through`;
   } else if (game.result === "detectives_win") {
     stat =
       top - second <= 1
-        ? `Unmasked ${top} votes to ${second} — a photo finish`
+        ? `Unmasked ${top} votes to ${second} - a photo finish`
         : `${top} votes against them: the team had a nose for it`;
   } else {
     stat = "The Rabbit hid so well it forgot its own missions";
@@ -170,7 +170,7 @@ export async function GET(
             {stat}
           </div>
           <div style={{ fontSize: 26, color: "#3A3340", marginTop: 48, display: "flex" }}>
-            {appHost}/i/{island?.slug ?? ""} — Would your team survive the Rabbit?
+            {appHost}/i/{island?.slug ?? ""} - Would your team survive the Rabbit?
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>

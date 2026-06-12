@@ -1,6 +1,6 @@
 -- ============================================================
--- SEED — catalogue d'items + banque de missions
--- ⚠️ FICHIER GÉNÉRÉ par scripts/generate-seed.ts — ne pas éditer à la main.
+-- SEED - catalogue d'items + banque de missions
+-- ⚠️ FICHIER GÉNÉRÉ par scripts/generate-seed.ts - ne pas éditer à la main.
 -- ============================================================
 
 -- 42 items
@@ -32,7 +32,7 @@ insert into items (slug, name, slot, rarity, params, unlock_hint) values
   ('beach_racket', 'Beach paddle', 'hand', 'uncommon', '{"shape":"racket","color":"#FF8C7A","grip":"#EBD8C3"}'::jsonb, 'Team victory'),
   ('magnifier', 'Detective''s magnifier', 'hand', 'rare', '{"shape":"magnifier","color":"#F2C14E","glass":"#C8E6F5"}'::jsonb, 'Detectives'' victory'),
   ('bubble_wand', 'Bubble wand', 'hand', 'rare', '{"shape":"wand","color":"#D9C7F2","bubbles":"#C8E6F5"}'::jsonb, 'Rabbit victory'),
-  ('golden_carrot', 'Golden Carrot', 'hand', 'legendary', '{"shape":"carrot","color":"#F2C14E","leaf":"#FFE9A0","glow":true}'::jsonb, 'Validated referral — for the whole island 🥕✨'),
+  ('golden_carrot', 'Golden Carrot', 'hand', 'legendary', '{"shape":"carrot","color":"#F2C14E","leaf":"#FFE9A0","glow":true}'::jsonb, 'Validated referral - for the whole island 🥕✨'),
   ('sparkles', 'Sparkles', 'aura', 'common', '{"kind":"sparkles","color":"#FFF3CF","count":8}'::jsonb, 'Standup streak'),
   ('fireflies', 'Fireflies', 'aura', 'uncommon', '{"kind":"fireflies","color":"#FFE9A0","count":10}'::jsonb, '5-day streak'),
   ('petal_particles', 'Petals', 'aura', 'rare', '{"kind":"petals","color":"#F6C6D8","count":12}'::jsonb, 'Rabbit victory'),

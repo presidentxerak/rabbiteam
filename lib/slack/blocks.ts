@@ -131,7 +131,7 @@ export function rabbitMissionsDM(
         actions(button("I completed this mission ✅", "mission_done", m.gameMissionId)),
       );
     } else {
-      blocks.push(context("🔎 Auto-detected — nothing to do, I'll confirm in your DMs."));
+      blocks.push(context("🔎 Auto-detected - nothing to do, I'll confirm in your DMs."));
     }
   });
   blocks.push(divider());
@@ -158,17 +158,17 @@ export function votingOpenBlocks(islandUrl: string): Block[] {
 
 export function standupReminderBlocks(): Block[] {
   return [
-    section("☀️ *Today's standup* — drop your intention in 30 seconds, earn your carrots."),
+    section("☀️ *Today's standup* - drop your intention in 30 seconds, earn your carrots."),
     actions(button("Do my standup 🥕", "open_standup_modal")),
   ];
 }
 
 export function clueBlocks(ordinal: number, content: string | null, price: number): Block[] {
   if (content) {
-    return [section(`🔍 *Clue #${ordinal}* — ${content}`)];
+    return [section(`🔍 *Clue #${ordinal}* - ${content}`)];
   }
   return [
-    section(`🔍 *Clue #${ordinal}* — available at the burrow.`),
+    section(`🔍 *Clue #${ordinal}* - available at the burrow.`),
     actions(button(`Unlock (${price} 🥕)`, "unlock_clue", String(ordinal))),
     context("Purchase is individual. What you say about it afterwards… that's your business. 😏"),
   ];
@@ -179,6 +179,6 @@ export function dropAnnounceBlocks(playerName: string, itemName: string, rarity:
     common: "⚪", uncommon: "🟢", rare: "🔵", epic: "🟣", legendary: "🟡",
   };
   return [
-    section(`✨ *${playerName}* unlocked *${itemName}* ${rarityEmoji[rarity] ?? ""} — ${reason}`),
+    section(`✨ *${playerName}* unlocked *${itemName}* ${rarityEmoji[rarity] ?? ""} - ${reason}`),
   ];
 }

@@ -58,7 +58,7 @@ export default function JoinClient(props: {
         {props.displayName}, meet your rabbit.
       </h1>
       <p style={{ color: "var(--ink-soft)", maxWidth: 480 }}>
-        Born the moment you joined the island — one of a kind, computed forever. No one else has the
+        Born the moment you joined the island - one of a kind, computed forever. No one else has the
         same one.
       </p>
       <div className="rabbit-stage">

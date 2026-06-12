@@ -125,7 +125,7 @@ async function processVote(teamId: string, interaction: SlackInteraction): Promi
     .maybeSingle<GameRow>();
   if (!game || game.status !== "voting") {
     await postEphemeral(ctx.token, ctx.island.slack_channel_id, player.slack_user_id,
-      "The burrow is closed — voting has ended. 🐰");
+      "The burrow is closed - voting has ended. 🐰");
     return;
   }
   // Suspect valide = joueur actif de la même île, pas soi-même.

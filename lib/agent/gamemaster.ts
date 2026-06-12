@@ -1,10 +1,10 @@
 /**
- * Game Master Agent — donne une voix narrative au jeu.
+ * Game Master Agent - donne une voix narrative au jeu.
  *
  * Principe « Claude propose, le code contrôle » : les indices factuels sont
  * générés par le moteur pur (lib/server/clues.ts) qui GARANTIT qu'ils laissent
  * assez de candidats (isClueSafe). Le Game Master ne fait que les RÉÉCRIRE de
- * façon plus vivante, sans ajouter ni retirer le moindre fait — la garantie
+ * façon plus vivante, sans ajouter ni retirer le moindre fait - la garantie
  * d'équilibrage reste celle du moteur, pas du modèle. En cas d'échec ou
  * d'absence de clé, on retombe sur le texte factuel original.
  */
@@ -36,9 +36,9 @@ export async function narrateClue(factualClue: string, locale: "fr" | "en"): Pro
       max_tokens: 300,
       output_config: { effort: "low" },
       system:
-        "You are the Game Master of Rabbiteam's Rabbit Season — a playful, slightly theatrical narrator for a Slack social-deduction game. " +
+        "You are the Game Master of Rabbiteam's Rabbit Season - a playful, slightly theatrical narrator for a Slack social-deduction game. " +
         "You rewrite a factual clue to make it more fun and atmospheric. " +
-        "ABSOLUTE RULE: keep every concrete fact EXACTLY as given — do not add, remove, soften, or invent any detail (no new attributes, names, numbers, or hints). " +
+        "ABSOLUTE RULE: keep every concrete fact EXACTLY as given - do not add, remove, soften, or invent any detail (no new attributes, names, numbers, or hints). " +
         "Same facts, livelier voice. One or two short sentences. Light emoji ok. " +
         `Reply ONLY with the rewritten clue, in ${lang}.`,
       messages: [{ role: "user", content: factualClue }],

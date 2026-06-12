@@ -4,7 +4,7 @@
  */
 import { z } from "zod";
 
-// ============ Slack — slash commands (application/x-www-form-urlencoded) ============
+// ============ Slack - slash commands (application/x-www-form-urlencoded) ============
 
 export const slackCommandSchema = z.object({
   command: z.string(),
@@ -17,7 +17,7 @@ export const slackCommandSchema = z.object({
 });
 export type SlackCommand = z.infer<typeof slackCommandSchema>;
 
-// ============ Slack — Events API ============
+// ============ Slack - Events API ============
 
 export const slackUrlVerificationSchema = z.object({
   type: z.literal("url_verification"),
@@ -64,7 +64,7 @@ export const slackEventEnvelopeSchema = z.union([
 export type SlackMessageEvent = z.infer<typeof slackMessageEventSchema>;
 export type SlackReactionEvent = z.infer<typeof slackReactionEventSchema>;
 
-// ============ Slack — interactions (boutons, modals) ============
+// ============ Slack - interactions (boutons, modals) ============
 
 export const slackInteractionSchema = z.object({
   type: z.enum(["block_actions", "view_submission", "view_closed"]),
@@ -99,7 +99,7 @@ export const slackInteractionSchema = z.object({
 });
 export type SlackInteraction = z.infer<typeof slackInteractionSchema>;
 
-// ============ Slack — OAuth callback ============
+// ============ Slack - OAuth callback ============
 
 export const slackOAuthQuerySchema = z.object({
   code: z.string().min(1),

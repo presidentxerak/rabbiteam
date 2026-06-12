@@ -29,14 +29,14 @@ function slackInstallUrl(ref?: string): string {
 }
 
 const WEEK = [
-  { day: "MON", time: "9:00", title: "Season opens", body: "One active player is secretly drawn as The Rabbit and DM'd 3 missions (one easy, one medium, one hard) to slip into Slack, Notion or your tickets. Everyone else just sees “Season #N is open — the Rabbit is among you.”" },
+  { day: "MON", time: "9:00", title: "Season opens", body: "One active player is secretly drawn as The Rabbit and DM'd 3 missions (one easy, one medium, one hard) to slip into Slack, Notion or your tickets. Everyone else just sees “Season #N is open - the Rabbit is among you.”" },
   { day: "DAILY", time: "9:30", title: "Standup", body: "A single non-spammy reminder. Post your intention in 30 seconds, earn 10 carrots (+ a streak bonus), and items drop at 3, 5 and every 10 days. People who already posted aren't pinged." },
-  { day: "TUE", time: "10:00", title: "Free clue #1", body: "A deliberately broad clue, generated from the Rabbit's public profile (avatar traits, name, seniority). The engine guarantees it still leaves at least 3 suspects — no one is fingered on day one." },
-  { day: "WED", time: "10:00", title: "Paid clue #2", body: "Sharper (leaves at least 2 suspects), unlocked individually for 30 carrots via /rabbiteam unlock. Whoever pays can bluff about what they learned — that social friction is the whole point." },
+  { day: "TUE", time: "10:00", title: "Free clue #1", body: "A deliberately broad clue, generated from the Rabbit's public profile (avatar traits, name, seniority). The engine guarantees it still leaves at least 3 suspects - no one is fingered on day one." },
+  { day: "WED", time: "10:00", title: "Paid clue #2", body: "Sharper (leaves at least 2 suspects), unlocked individually for 30 carrots via /rabbiteam unlock. Whoever pays can bluff about what they learned - that social friction is the whole point." },
   { day: "THU", time: "15:00", title: "Free clue #3 + recap", body: "The last free clue lands, plus a reminder that tomorrow is the vote. This is when the channel lights up." },
-  { day: "FRI", time: "11:00", title: "Voting opens", body: "Cast your vote in a Slack modal (changeable until 4pm). On the 3D island the rabbits gather in front of the house, in real time — you see who voted, never for whom." },
+  { day: "FRI", time: "11:00", title: "Voting opens", body: "Cast your vote in a Slack modal (changeable until 4pm). On the 3D island the rabbits gather in front of the house, in real time - you see who voted, never for whom." },
   { day: "FRI", time: "16:00", title: "Voting closes & scoring", body: "The majority suspect is computed. A tie means no unmasking. The result is locked but kept secret for 30 more minutes." },
-  { day: "FRI", time: "16:30", title: "The reveal", body: "A dramatic 3-message Slack sequence, a spotlight and falling mask on the 3D island, the shareable Reveal Card, and the loot. Votes and missions become public — fuel for the after-party." },
+  { day: "FRI", time: "16:30", title: "The reveal", body: "A dramatic 3-message Slack sequence, a spotlight and falling mask on the 3D island, the shareable Reveal Card, and the loot. Votes and missions become public - fuel for the after-party." },
 ];
 
 export default async function LandingPage({ searchParams }: { searchParams: SearchParams }) {
@@ -50,7 +50,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
       <AmbientMusic />
 
       <header className="hero">
-        <div className="hackathon-badge">Anthropic × Motier — Hackathon</div>
+        <div className="hackathon-badge">Anthropic × Motier Hackathon</div>
 
         <HeroRabbit />
 
@@ -97,16 +97,16 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
         <div className="how-steps">
           <div className="card">
             <span className="step-num">1</span>
-            <h3>Ambient — daily, zero effort</h3>
+            <h3>Ambient - daily, zero effort</h3>
             <p>
               Slack messages, Notion pages, finished tickets: every real signal grows a flower, a
-              lantern, a seashell on your 3D island. 100% collective cosmetics —{" "}
+              lantern, a seashell on your 3D island. 100% collective cosmetics -{" "}
               <strong>never</strong> an individual performance ranking.
             </p>
           </div>
           <div className="card">
             <span className="step-num">2</span>
-            <h3>Ritual — daily, 30 seconds</h3>
+            <h3>Ritual - daily, 30 seconds</h3>
             <p>
               Each morning, drop your intention of the day and a mood. You earn carrots, your streak
               climbs, and rare items unlock. Your rabbit has never been this well dressed.
@@ -114,7 +114,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
           </div>
           <div className="card">
             <span className="step-num">3</span>
-            <h3>Event — weekly, The Rabbit Season</h3>
+            <h3>Event - weekly, The Rabbit Season</h3>
             <p>
               Every Monday one player secretly becomes <strong>The Rabbit</strong> with 3 discreet
               missions to slip into your real tools. Clues Tuesday, Wednesday (paid in carrots) and
@@ -129,7 +129,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
         <h2 style={{ textAlign: "center", fontSize: 32 }}>A week with the Rabbit, hour by hour</h2>
         <p className="sub" style={{ margin: "8px auto 28px", textAlign: "center" }}>
           Everything happens in Slack on your island&apos;s timezone. One automatic dispatcher runs
-          the whole show — nothing for you to schedule.
+          the whole show - nothing for you to schedule.
         </p>
         <div className="timeline">
           {WEEK.map((s, i) => (
@@ -160,7 +160,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
             </div>
             <div className="card">
               <h4>Draw</h4>
-              <p>It escapes but hid too much (fewer than 2 missions). No loot — the anti-passivity rule that stops the Rabbit from simply doing nothing.</p>
+              <p>It escapes but hid too much (fewer than 2 missions). No loot - the anti-passivity rule that stops the Rabbit from simply doing nothing.</p>
             </div>
           </div>
         </div>
@@ -194,19 +194,19 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
       <section className="agentloop">
         <h2 style={{ textAlign: "center", fontSize: 32 }}>Built on the agent loop</h2>
         <p className="sub" style={{ margin: "8px auto 28px", textAlign: "center" }}>
-          Rabbiteam maps cleanly onto the four primitives of the Claude Agent SDK — and adds two
+          Rabbiteam maps cleanly onto the four primitives of the Claude Agent SDK - and adds two
           real Claude agents on top.
         </p>
         <div className="primitives">
           <div className="card">
             <span className="prim-tag">Agent</span>
             <h3>The Game Master</h3>
-            <p>The hourly dispatcher runs the season: picks the Rabbit, deals missions, releases clues, scores the vote — and Claude narrates each clue in the team&apos;s voice.</p>
+            <p>The hourly dispatcher runs the season: picks the Rabbit, deals missions, releases clues, scores the vote - and Claude narrates each clue in the team&apos;s voice.</p>
           </div>
           <div className="card">
             <span className="prim-tag">Environment</span>
             <h3>Slack and the island</h3>
-            <p>The team&apos;s real tools are the workspace: Slack messages, Notion pages, finished tickets — all feeding the 3D island the agents act on.</p>
+            <p>The team&apos;s real tools are the workspace: Slack messages, Notion pages, finished tickets - all feeding the 3D island the agents act on.</p>
           </div>
           <div className="card">
             <span className="prim-tag">Session</span>
@@ -216,14 +216,14 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
           <div className="card">
             <span className="prim-tag">Events</span>
             <h3>Standups, kudos, webhooks</h3>
-            <p>Every real signal is an event that grows the island and drives the loop — no polling, one cron, cost near zero.</p>
+            <p>Every real signal is an event that grows the island and drives the loop - no polling, one cron, cost near zero.</p>
           </div>
         </div>
         <div className="card agent-highlight">
-          <h3>Detective Agent — and it literally can&apos;t cheat</h3>
+          <h3>Detective Agent - and it literally can&apos;t cheat</h3>
           <p>
             Type <code>/rabbiteam detective who has lop ears?</code> and a Claude agent investigates
-            with you — reading the published clues, the roster, and the public 3D avatar traits via
+            with you - reading the published clues, the roster, and the public 3D avatar traits via
             tool use, then narrowing the suspects. Its tools <strong>physically cannot</strong> read
             the Rabbit&apos;s identity: that&apos;s guarded by Postgres Row-Level Security, not by a
             prompt. Even the AI can&apos;t spoil the secret.
@@ -281,7 +281,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
           <div className="card">
             <h4>Is my work being tracked or ranked?</h4>
             <p>
-              No — and that&apos;s a hard rule. Real signals (messages, pages, finished tickets) only
+              No - and that&apos;s a hard rule. Real signals (messages, pages, finished tickets) only
               ever feed <strong>collective cosmetics</strong> on the shared island. There is no
               individual productivity metric, anywhere, ever. Kanban signals are aggregated per team,
               never per person.
@@ -291,7 +291,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
             <h4>How is the Rabbit&apos;s identity protected?</h4>
             <p>
               By Postgres, not by our front-end. The secret lives in a table with Row-Level Security
-              and <strong>no read policy at all</strong> — even an authenticated member crafting a
+              and <strong>no read policy at all</strong> - even an authenticated member crafting a
               raw query gets zero rows. Missions stay invisible until the reveal, so you can&apos;t
               just watch who&apos;s doing what.
             </p>
@@ -306,7 +306,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
           <div className="card">
             <h4>What do we need to install?</h4>
             <p>
-              Just the Slack app — “Add to Slack”, then <code>/rabbiteam setup #channel</code>. Every
+              Just the Slack app - “Add to Slack”, then <code>/rabbiteam setup #channel</code>. Every
               member gets a magic link in DM and discovers their unique rabbit. Notion and Kanban are
               optional extras.
             </p>
@@ -315,14 +315,14 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
             <h4>Can the AI Detective spoil the secret?</h4>
             <p>
               No. The Detective Agent reasons over published clues and public avatar traits via tool
-              use, but its tools <strong>cannot read the secret table</strong> — the same RLS wall
+              use, but its tools <strong>cannot read the secret table</strong> - the same RLS wall
               applies to it. Even the AI plays fair.
             </p>
           </div>
           <div className="card">
             <h4>What does it cost to run?</h4>
             <p>
-              Almost nothing. Everything is event-driven — a single hourly dispatcher computes each
+              Almost nothing. Everything is event-driven - a single hourly dispatcher computes each
               island&apos;s local time and acts only when something is due. No always-on servers,
               cost near zero.
             </p>
@@ -335,7 +335,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
           Add to Slack
         </a>
         <p style={{ marginTop: 24 }}>
-          Rabbiteam — the Rabbit is among you. · No individual metrics, ever.
+          Rabbiteam - the Rabbit is among you. · No individual metrics, ever.
         </p>
         <p style={{ fontSize: 13 }}>Built for the Anthropic × Motier Hackathon.</p>
       </footer>

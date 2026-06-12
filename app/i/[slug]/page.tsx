@@ -45,7 +45,7 @@ export async function generateMetadata({
     .limit(1)
     .maybeSingle<{ id: string }>();
   return {
-    title: `${island.name}'s island — Rabbiteam`,
+    title: `${island.name}'s island - Rabbiteam`,
     description: "Would your team survive the Rabbit?",
     openGraph: lastGame
       ? { images: [`${appUrl}/api/og/reveal/${lastGame.id}`] }

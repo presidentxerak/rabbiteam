@@ -44,6 +44,13 @@ a {
   color: var(--coral-deep);
 }
 
+/* Gros titres : serif éditorial (style présentations Anthropic) */
+h1,
+h2,
+.logo-text {
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+}
+
 /* Boutons style « jeu vidéo » : profondeur 3D (bord inférieur), rebond au
    survol, enfoncement au clic, halo lumineux animé. */
 .btn {
@@ -278,8 +285,8 @@ a {
   margin-bottom: 4px;
 }
 .hero-rabbit-stage {
-  width: min(420px, 80vw);
-  height: min(300px, 60vw);
+  width: min(560px, 90vw);
+  height: min(440px, 80vw);
   touch-action: none;
 }
 .logo-text {

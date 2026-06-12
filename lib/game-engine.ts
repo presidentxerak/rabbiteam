@@ -121,7 +121,7 @@ export function isRabbitAsleep(rabbitMessagesSinceMonday: number): boolean {
 /**
  * Anti-fuite : un indice n'est publiable que s'il laisse assez de candidats.
  * (≥3 le mardi, ≥2 pour l'indice payant). Les indices ne s'appuient JAMAIS
- * sur les données de standup — vérifié à la génération, pas ici.
+ * sur les données de standup - vérifié à la génération, pas ici.
  */
 export function isClueSafe(matchingCandidates: number, minCandidates: number): boolean {
   return matchingCandidates >= minCandidates;
@@ -234,7 +234,7 @@ export type CronAction =
 /**
  * Actions dues pour une île à un instant local donné.
  * weekday : 0=dimanche … 6=samedi (convention JS). Le cron tourne à :00 et :30.
- * IDEMPOTENCE : chaque action revérifie l'état en base avant d'agir —
+ * IDEMPOTENCE : chaque action revérifie l'état en base avant d'agir -
  * cette fonction dit seulement ce qui est PLANIFIÉ à cette heure.
  */
 export function dueActions(weekday: number, hour: number, minute: number): CronAction[] {

@@ -35,12 +35,12 @@ function WavingRabbit() {
     if (group.current) {
       const t = clock.elapsedTime;
       group.current.rotation.y = Math.sin(t * 0.6) * 0.3;
-      group.current.position.y = -0.4 + Math.abs(Math.sin(t * 1.8)) * 0.1;
+      group.current.position.y = -0.55 + Math.abs(Math.sin(t * 1.8)) * 0.08;
     }
   });
 
   return (
-    <group ref={group} position={[0, -0.4, 0]}>
+    <group ref={group} position={[0, -0.55, 0]}>
       {/* mascot-82 : rose dragée, oreilles droites, yeux ronds, joues roses */}
       <Rabbit avatarSeed="mascot-82" scale={1.5} expression={expr} />
     </group>
@@ -51,7 +51,8 @@ export default function HeroRabbit() {
   return (
     <div className="hero-rabbit">
       <div className="hero-rabbit-stage">
-        <Canvas camera={{ position: [0, 0.7, 3] }} dpr={[1, 2]}>
+        {/* caméra frontale rapprochée + fov serré : le lapin remplit la scène */}
+        <Canvas camera={{ position: [0, 0.45, 2.2], fov: 40 }} dpr={[1, 2]}>
           <ambientLight intensity={0.95} color="#FFF6E8" />
           <directionalLight position={[3, 5, 3]} intensity={1.5} color="#FFFDF2" />
           <directionalLight position={[-3, 2, -2]} intensity={0.4} color="#C8E6F5" />

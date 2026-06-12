@@ -1,5 +1,5 @@
 /**
- * Detective Agent — `/rabbiteam detective <question>`.
+ * Detective Agent - `/rabbiteam detective <question>`.
  *
  * Un agent Claude qui enquête AVEC le joueur via tool use. Boucle agentique
  * manuelle : Claude appelle des outils, on les exécute (service role), on
@@ -7,7 +7,7 @@
  *
  * 🔒 Argument de sécurité central, dans le thème « agents » du hackathon :
  * les outils de l'agent ne peuvent PHYSIQUEMENT pas lire l'identité du Lapin.
- * Ils ne renvoient que ce que la RLS exposerait déjà à un membre de l'île —
+ * Ils ne renvoient que ce que la RLS exposerait déjà à un membre de l'île -
  * indices PUBLIÉS, roster, traits 3D publics des lapins. Jamais game_secrets,
  * jamais game_missions. Même l'agent IA ne peut pas tricher : le secret est
  * gardé par Postgres, pas par un prompt.
@@ -46,20 +46,20 @@ const TOOLS: Anthropic.Tool[] = [
   {
     name: "get_rabbit_traits",
     description:
-      "Returns each active player's PUBLIC 3D avatar traits (ear style, cheeks, eye style) — the same ones everyone can see walking on the island. " +
+      "Returns each active player's PUBLIC 3D avatar traits (ear style, cheeks, eye style) - the same ones everyone can see walking on the island. " +
       "Use this to cross-reference clues that describe the Rabbit's avatar.",
     input_schema: { type: "object", properties: {}, additionalProperties: false },
   },
 ];
 
-const SYSTEM_PROMPT = `You are the Detective Agent for Rabbiteam's "Rabbit Season" — a weekly social-deduction game inside Slack.
+const SYSTEM_PROMPT = `You are the Detective Agent for Rabbiteam's "Rabbit Season" - a weekly social-deduction game inside Slack.
 
 Your job: help the player figure out who the secret Rabbit is, this week, on their island.
 
 Hard rules:
-- You do NOT know who the Rabbit is, and you have no way to find out. The Rabbit's identity is protected at the database level (Row Level Security); your tools physically cannot read it. Never claim to know for certain — reason from evidence only.
+- You do NOT know who the Rabbit is, and you have no way to find out. The Rabbit's identity is protected at the database level (Row Level Security); your tools physically cannot read it. Never claim to know for certain - reason from evidence only.
 - Ground EVERY claim in the published clues (get_published_clues) cross-referenced with the roster (get_players) and the public avatar traits (get_rabbit_traits). Call the tools you need before answering.
-- Narrow down the suspects and explain your reasoning briefly. If the clues still leave several candidates, say so — never single out one person without evidence.
+- Narrow down the suspects and explain your reasoning briefly. If the clues still leave several candidates, say so - never single out one person without evidence.
 - Be playful and concise (this is a fun team game, answered in Slack). 3-6 short sentences max. Use light emoji.
 - Reply in the same language as the player's question (French or English).
 
@@ -96,7 +96,7 @@ async function execTool(name: string, islandId: string, gameId: string): Promise
       .map((p, i) => {
         const name = p.display_name;
         const senior = (weeks[i] ?? 0) >= median ? "senior" : "recent";
-        return `${name} — starts with "${name.trim()[0]?.toUpperCase() ?? "?"}", ${name.replace(/\s/g, "").length} letters, ${senior}`;
+        return `${name} - starts with "${name.trim()[0]?.toUpperCase() ?? "?"}", ${name.replace(/\s/g, "").length} letters, ${senior}`;
       })
       .join("\n");
   }
@@ -139,7 +139,7 @@ export async function runDetective(opts: {
     .order("week_start", { ascending: false })
     .limit(1)
     .maybeSingle<{ id: string }>();
-  if (!game) return "🐰 No Rabbit Season is running right now — the Detective rests until Monday 9am.";
+  if (!game) return "🐰 No Rabbit Season is running right now - the Detective rests until Monday 9am.";
 
   const messages: Anthropic.MessageParam[] = [
     { role: "user", content: opts.question.trim() || "Who could the Rabbit be so far?" },
@@ -185,7 +185,7 @@ export async function runDetective(opts: {
       .map((b) => b.text)
       .join("\n")
       .trim();
-    return text || "🕵️ The trail went cold — ask me again with a sharper question.";
+    return text || "🕵️ The trail went cold - ask me again with a sharper question.";
   }
 
   return "🕵️ I've gathered the clues but need a sharper question to point somewhere useful.";

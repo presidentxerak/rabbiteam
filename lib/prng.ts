@@ -14,7 +14,7 @@ export function mulberry32(seed: number): () => number {
   };
 }
 
-/** Hash 32 bits stable d'une chaîne (xmur3) — pour dériver des sous-seeds. */
+/** Hash 32 bits stable d'une chaîne (xmur3) - pour dériver des sous-seeds. */
 export function hashSeed(input: string): number {
   let h = 1779033703 ^ input.length;
   for (let i = 0; i < input.length; i++) {

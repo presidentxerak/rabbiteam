@@ -14,6 +14,7 @@ import { checkReferralActivation } from "@/lib/server/referrals";
 import { isAgentEnabled } from "@/lib/agent/client";
 import { runDetective } from "@/lib/agent/detective";
 import { runDemoSeason, runDemoReveal, loadIslandCtx } from "@/lib/server/season";
+import { isNotionEnabled, verifyNotion, syncNotionPages } from "@/lib/server/notion";
 import { randomSeed } from "@/lib/prng";
 import type { GameRow, PlayerRow } from "@/lib/server/db-types";
 
@@ -61,10 +62,11 @@ export async function POST(req: Request): Promise<NextResponse> {
         case "detective": case "ai": case "ia": return await handleDetective(ctx, cmd);
         case "demo": case "start": return await handleDemo(ctx, cmd);
         case "reveal": return await handleReveal(ctx, cmd);
+        case "notion": return await handleNotion(ctx, cmd);
         default:
           return await respond(
             cmd.response_url,
-            "🐰 *Commands*: `/rabbiteam setup #channel` · `demo` · `standup` · `clue` · `unlock <n>` · `vote` · `detective <question>` · `reveal` · `island` · `invite`",
+            "🐰 *Commands*: `/rabbiteam setup #channel` · `demo` · `standup` · `clue` · `unlock <n>` · `vote` · `detective <question>` · `reveal` · `notion` · `island` · `invite`",
           );
       }
     } catch (e) {
@@ -360,6 +362,41 @@ async function handleReveal(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   }
   const msg = await runDemoReveal(islandCtx);
   await respond(cmd.response_url, msg);
+}
+
+// ============ /rabbiteam notion — connecte + importe les vraies pages Notion ============
+
+async function handleNotion(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
+  if (!isNotionEnabled()) {
+    await respond(
+      cmd.response_url,
+      "Notion isn't configured: add `NOTION_API_TOKEN` (your internal integration token) in Vercel, then Redeploy.",
+    );
+    return;
+  }
+  await respond(cmd.response_url, "🔗 Connecting to Notion and importing recent pages…");
+
+  const check = await verifyNotion();
+  if (!check.ok) {
+    await respond(cmd.response_url, `❌ Notion token rejected: ${check.error ?? "invalid"}. Check NOTION_API_TOKEN.`);
+    return;
+  }
+
+  // Marque cette org comme connectée à Notion (l'id du bot sert de marqueur ;
+  // le webhook route ensuite ses events vers cette île).
+  const admin = createSupabaseAdminClient();
+  await admin
+    .from("organizations")
+    .update({ notion_workspace_id: check.id ?? "connected" })
+    .eq("id", ctx.orgId);
+
+  // Import immédiat des pages des dernières 24 h → événements d'île + missions.
+  const imported = await syncNotionPages(ctx.island.id, ctx.token, 1440);
+  await respond(
+    cmd.response_url,
+    `✅ Notion connected to *${check.name ?? "your workspace"}*. Imported ${imported} recent page${imported === 1 ? "" : "s"} onto the island. ` +
+      "New pages will keep growing your island (run `/rabbiteam notion` again to pull more, or set up the Notion webhook for real time).",
+  );
 }
 
 // ============ /rabbiteam detective <question> - Detective Agent (Claude) ============

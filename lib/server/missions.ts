@@ -233,6 +233,14 @@ export async function handleNotionPage(islandId: string, token: string): Promise
     type: "notion_page",
     payload: {},
   });
+  await completeNotionPageMissions(islandId, token);
+}
+
+/**
+ * Complète les missions Notion auto (`page_created`) du Lapin actif, si une
+ * saison est en cours. Réutilisé par le webhook ET par la sync par jeton.
+ */
+export async function completeNotionPageMissions(islandId: string, token: string): Promise<void> {
   const ctx = await activeMissions(islandId);
   if (!ctx) return;
   for (const gm of ctx.missions) {

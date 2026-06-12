@@ -11,6 +11,8 @@ import { getChannelMembers, getUserInfo, openModal, postDM } from "@/lib/slack/c
 import { standupModal, voteModal } from "@/lib/slack/blocks";
 import { canAddPlayer } from "@/lib/game-engine";
 import { checkReferralActivation } from "@/lib/server/referrals";
+import { isAgentEnabled } from "@/lib/agent/client";
+import { runDetective } from "@/lib/agent/detective";
 import { randomSeed } from "@/lib/prng";
 import type { GameRow, PlayerRow } from "@/lib/server/db-types";
 
@@ -55,10 +57,11 @@ export async function POST(req: Request): Promise<NextResponse> {
         case "vote": return await handleVote(ctx, cmd);
         case "island": case "ile": case "île": return await handleIle(ctx, cmd);
         case "invite": case "inviter": return await handleInviter(ctx, cmd);
+        case "detective": case "ai": case "ia": return await handleDetective(ctx, cmd);
         default:
           return await respond(
             cmd.response_url,
-            "🐰 *Commands*: `/rabbiteam setup #channel` · `standup` · `clue` · `unlock <n>` · `vote` · `island` · `invite`",
+            "🐰 *Commands*: `/rabbiteam setup #channel` · `standup` · `clue` · `unlock <n>` · `vote` · `detective <question>` · `island` · `invite`",
           );
       }
     } catch (e) {
@@ -314,6 +317,31 @@ async function handleIle(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   await respond(
     cmd.response_url,
     `🏝️ *${ctx.island.name}* — ${population ?? 0} rabbits · ${season}\n${APP_URL()}/island/${ctx.island.slug}`,
+  );
+}
+
+// ============ /rabbiteam detective <question> — Detective Agent (Claude) ============
+
+async function handleDetective(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
+  if (!isAgentEnabled()) {
+    await respond(
+      cmd.response_url,
+      "🕵️ The Detective Agent isn't switched on for this island (no AI key configured).",
+    );
+    return;
+  }
+  const player = await resolvePlayer(ctx.island.id, cmd.user_id);
+  if (!player) {
+    await respond(cmd.response_url, "You don't have a rabbit here yet 🐰");
+    return;
+  }
+  // La question = tout le texte après le sous-commande "detective".
+  const question = cmd.text.replace(/^\s*\S+\s*/, "").trim();
+  await respond(cmd.response_url, "🕵️ The Detective is on the case… (reading the clues)");
+  const answer = await runDetective({ islandId: ctx.island.id, question });
+  await respond(
+    cmd.response_url,
+    answer ?? "🕵️ The Detective couldn't reach a conclusion right now — try again in a moment.",
   );
 }
 

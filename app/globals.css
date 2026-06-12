@@ -287,8 +287,47 @@ a {
   border-top-color: var(--bonbon);
 }
 
+/* Agent-loop section */
+.agentloop {
+  margin: 48px 0 8px;
+}
+.primitives {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-bottom: 20px;
+}
+.prim-tag {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--cream);
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.primitives .card:nth-of-type(1) { border-top: 5px solid var(--coral); }
+.primitives .card:nth-of-type(2) { border-top: 5px solid var(--sky); }
+.primitives .card:nth-of-type(3) { border-top: 5px solid var(--mint); }
+.primitives .card:nth-of-type(4) { border-top: 5px solid var(--gold); }
+.agent-highlight {
+  border: 3px solid var(--violet);
+  background: linear-gradient(135deg, rgba(155, 93, 229, 0.08), rgba(77, 150, 255, 0.08));
+}
+.agent-highlight code {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
 /* Titres de section plus joyeux */
 .how h2,
+.agentloop h2,
 #pricing h2 {
   background: linear-gradient(90deg, var(--coral) 0%, var(--violet) 60%, var(--sky) 100%);
   -webkit-background-clip: text;

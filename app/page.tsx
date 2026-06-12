@@ -133,6 +133,47 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
         </div>
       </section>
 
+      {/* ===== Built on the agent loop (hackathon theme) ===== */}
+      <section className="agentloop">
+        <h2 style={{ textAlign: "center", fontSize: 32 }}>Built on the agent loop 🤖</h2>
+        <p className="sub" style={{ margin: "8px auto 28px", textAlign: "center" }}>
+          Rabbiteam maps cleanly onto the four primitives of the Claude Agent SDK — and adds two
+          real Claude agents on top.
+        </p>
+        <div className="primitives">
+          <div className="card">
+            <span className="prim-tag">Agent</span>
+            <h3>🎭 The Game Master</h3>
+            <p>The hourly dispatcher runs the season: picks the Rabbit, deals missions, releases clues, scores the vote — and Claude narrates each clue in the team&apos;s voice.</p>
+          </div>
+          <div className="card">
+            <span className="prim-tag">Environment</span>
+            <h3>🏝️ Slack + the island</h3>
+            <p>The team&apos;s real tools are the workspace: Slack messages, Notion pages, finished tickets — all feeding the 3D island the agents act on.</p>
+          </div>
+          <div className="card">
+            <span className="prim-tag">Session</span>
+            <h3>🗓️ The Rabbit Season</h3>
+            <p>Each week is one stateful run, Monday 9am to Friday&apos;s reveal, with its own secret, missions, clues and votes.</p>
+          </div>
+          <div className="card">
+            <span className="prim-tag">Events</span>
+            <h3>⚡ Standups, kudos, webhooks</h3>
+            <p>Every real signal is an event that grows the island and drives the loop — no polling, one cron, cost ≈ 0.</p>
+          </div>
+        </div>
+        <div className="card agent-highlight">
+          <h3>🕵️ Detective Agent — and it literally can&apos;t cheat</h3>
+          <p>
+            Type <code>/rabbiteam detective who has lop ears?</code> and a Claude agent investigates
+            with you — reading the published clues, the roster, and the public 3D avatar traits via
+            tool use, then narrowing the suspects. Its tools <strong>physically cannot</strong> read
+            the Rabbit&apos;s identity: that&apos;s guarded by Postgres Row-Level Security, not by a
+            prompt. Even the AI can&apos;t spoil the secret.
+          </p>
+        </div>
+      </section>
+
       {/* ===== Pricing (hidden for now, kept in code) ===== */}
       <section id="pricing" hidden style={{ display: "none" }}>
         <h2 style={{ textAlign: "center", fontSize: 32 }}>One price per island, not per head</h2>

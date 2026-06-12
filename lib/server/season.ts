@@ -21,6 +21,7 @@ import {
   type VoteLite,
 } from "@/lib/game-engine";
 import { generateClues } from "./clues";
+import { narrateClue } from "@/lib/agent/gamemaster";
 import {
   announceDrop,
   grantItemToIsland,
@@ -46,6 +47,17 @@ import type { GameRow, IslandRow, PlayerRow } from "./db-types";
 const APP_URL = () => process.env.NEXT_PUBLIC_APP_URL ?? "https://rabbiteam.app";
 
 // ============ Idempotence ============
+
+/** Locale de l'organisation (pour la narration Game Master). Défaut: en. */
+async function islandLocale(orgId: string): Promise<"fr" | "en"> {
+  const admin = createSupabaseAdminClient();
+  const { data } = await admin
+    .from("organizations")
+    .select("locale")
+    .eq("id", orgId)
+    .maybeSingle<{ locale: "fr" | "en" }>();
+  return data?.locale ?? "en";
+}
 
 export async function claimAction(islandId: string, action: string, day: string): Promise<boolean> {
   const admin = createSupabaseAdminClient();
@@ -265,7 +277,14 @@ export async function startSeason(ctx: IslandCtx, day: string): Promise<void> {
     players,
     missions.map((m) => m.tool),
   );
-  await admin.from("clues").insert(clues.map((c) => ({ ...c, game_id: game.id })));
+  // Game Master Agent : réécrit chaque indice de façon plus vivante SANS
+  // changer les faits (la sûreté ≥ candidats vient du moteur, pas du modèle).
+  // Sans clé IA, narrateClue renvoie l'indice factuel inchangé.
+  const locale = await islandLocale(ctx.orgId);
+  const narratedClues = await Promise.all(
+    clues.map(async (c) => ({ ...c, content: await narrateClue(c.content, locale) })),
+  );
+  await admin.from("clues").insert(narratedClues.map((c) => ({ ...c, game_id: game.id })));
 
   // --- DM secret au Lapin ---
   const { data: missionDetails } = await admin

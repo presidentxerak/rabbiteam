@@ -119,6 +119,52 @@ h2,
   border-radius: 24px;
   padding: 28px;
   box-shadow: 0 6px 30px rgba(58, 51, 64, 0.08);
+  transform: translateY(0);
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.4, 0.5, 1),
+    box-shadow 0.22s ease;
+}
+/* Survol des cartes : lévitation douce + ombre profonde + liseré coloré qui
+   "monte". Le pseudo-élément crée un halo dégradé qui apparaît au survol. */
+.card:hover {
+  transform: translateY(-6px) scale(1.012);
+  box-shadow: 0 18px 44px rgba(58, 51, 64, 0.16);
+}
+.how-steps .card,
+.features .card,
+.scoring-grid .card,
+.faq .card,
+.primitives .card {
+  position: relative;
+  overflow: hidden;
+}
+.how-steps .card::after,
+.features .card::after,
+.scoring-grid .card::after,
+.faq .card::after,
+.primitives .card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(140% 90% at 50% 0%, rgba(255, 183, 71, 0.16), transparent 60%);
+  transition: opacity 0.25s ease;
+}
+.how-steps .card:hover::after,
+.features .card:hover::after,
+.scoring-grid .card:hover::after,
+.faq .card:hover::after,
+.primitives .card:hover::after {
+  opacity: 1;
+}
+/* La pastille numérotée des étapes "pulse" au survol de sa carte. */
+.how-steps .card:hover .step-num {
+  transform: scale(1.12) rotate(-6deg);
+}
+.step-num {
+  transition: transform 0.22s cubic-bezier(0.34, 1.6, 0.5, 1);
 }
 
 .tag {
@@ -182,10 +228,21 @@ h2,
   font-size: 13px;
   cursor: pointer;
   font-family: inherit;
+  transform: translateY(0);
+  transition: transform 0.14s cubic-bezier(0.34, 1.6, 0.5, 1), box-shadow 0.14s ease,
+    border-color 0.14s ease;
+}
+.item-chip:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 5px 14px rgba(58, 51, 64, 0.16);
+}
+.item-chip:active {
+  transform: translateY(0) scale(0.96);
 }
 .item-chip.equipped {
   border-color: var(--coral);
   background: #ffe9e2;
+  box-shadow: 0 0 0 3px rgba(255, 107, 87, 0.18);
 }
 .item-chip.rarity-rare {
   background: #e2f3ff;
@@ -202,6 +259,36 @@ h2,
   border-radius: 12px;
   padding: 8px 12px;
   margin: 6px 0;
+  border-left: 3px solid transparent;
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+.clue-line:hover {
+  border-left-color: var(--sky);
+  transform: translateX(2px);
+}
+/* Carte de la timeline : glisse légèrement et son point s'illumine au survol */
+.tl-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.tl-row:hover .tl-card {
+  transform: translateX(4px);
+  box-shadow: 0 8px 24px rgba(58, 51, 64, 0.12);
+}
+.tl-dot {
+  transition: transform 0.18s cubic-bezier(0.34, 1.6, 0.5, 1);
+}
+.tl-row:hover .tl-dot {
+  transform: scale(1.25);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .item-chip,
+  .clue-line,
+  .tl-card,
+  .tl-dot,
+  .step-num {
+    transition: none;
+  }
 }
 
 .vote-banner {

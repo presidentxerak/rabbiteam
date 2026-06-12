@@ -1,10 +1,10 @@
 /**
- * Banque éditoriale des missions du Lapin (~60).
- * Source de vérité TypeScript ; le seed SQL (supabase/migrations/0002_seed.sql)
- * est généré à partir d'ici et doit rester synchrone.
+ * Editorial bank of the Rabbit's missions (~60).
+ * TypeScript source of truth; the SQL seed (supabase/migrations/0002_seed.sql)
+ * is generated from here and must stay in sync.
  *
- * detection 'auto'  : le handler Slack/Notion/Kanban détecte la complétion.
- * detection 'honor' : le Lapin coche lui-même via le bouton de son DM.
+ * detection 'auto'  : the Slack/Notion/Kanban handler detects completion.
+ * detection 'honor' : the Rabbit checks it off via the button in their DM.
  */
 
 export interface MissionDef {
@@ -17,93 +17,93 @@ export interface MissionDef {
 }
 
 export const MISSIONS_BANK: MissionDef[] = [
-  // ============ SLACK — difficulté 1 ============
-  { slug: "carrot_react_3", tool: "slack", difficulty: 1, detection: "auto", params: { emoji: "carrot", count: 3 }, briefMd: "Réagis avec 🥕 dans **3 threads différents** avant vendredi. L'air de rien." },
-  { slug: "hands_react_2", tool: "slack", difficulty: 1, detection: "auto", params: { emoji: "raised_hands", count: 2 }, briefMd: "Pose un 🙌 sur **2 messages de collègues différents**. Sois généreux, pas suspect." },
-  { slug: "gif_friday_vibes", tool: "slack", difficulty: 1, detection: "honor", params: {}, briefMd: "Poste un GIF (n'importe lequel) dans un canal public. Un seul. Bien choisi." },
-  { slug: "emoji_in_status", tool: "slack", difficulty: 1, detection: "honor", params: {}, briefMd: "Mets un emoji **légume** dans ton statut Slack pendant au moins une journée." },
-  { slug: "thank_someone", tool: "slack", difficulty: 1, detection: "honor", params: {}, briefMd: "Remercie publiquement un collègue pour quelque chose de précis. La sincérité est ta couverture." },
-  { slug: "purple_heart_2", tool: "slack", difficulty: 1, detection: "auto", params: { emoji: "purple_heart", count: 2 }, briefMd: "Dépose un 💜 sur **2 messages** de personnes différentes." },
-  { slug: "ask_question_channel", tool: "slack", difficulty: 1, detection: "honor", params: {}, briefMd: "Pose une vraie question dans un canal où tu n'as rien posté cette semaine." },
-  { slug: "morning_greeting", tool: "slack", difficulty: 1, detection: "honor", params: {}, briefMd: "Souhaite une bonne journée à l'équipe un matin, avec un emoji soleil. Naturel." },
+  // ============ SLACK — difficulty 1 ============
+  { slug: "carrot_react_3", tool: "slack", difficulty: 1, detection: "auto", params: { emoji: "carrot", count: 3 }, briefMd: "React with 🥕 in **3 different threads** before Friday. Casually." },
+  { slug: "hands_react_2", tool: "slack", difficulty: 1, detection: "auto", params: { emoji: "raised_hands", count: 2 }, briefMd: "Drop a 🙌 on **2 different colleagues' messages**. Be generous, not suspicious." },
+  { slug: "gif_friday_vibes", tool: "slack", difficulty: 1, detection: "honor", params: {}, briefMd: "Post a GIF (any one) in a public channel. Just one. Well chosen." },
+  { slug: "emoji_in_status", tool: "slack", difficulty: 1, detection: "honor", params: {}, briefMd: "Put a **vegetable** emoji in your Slack status for at least a day." },
+  { slug: "thank_someone", tool: "slack", difficulty: 1, detection: "honor", params: {}, briefMd: "Publicly thank a colleague for something specific. Sincerity is your cover." },
+  { slug: "purple_heart_2", tool: "slack", difficulty: 1, detection: "auto", params: { emoji: "purple_heart", count: 2 }, briefMd: "Leave a 💜 on **2 messages** from different people." },
+  { slug: "ask_question_channel", tool: "slack", difficulty: 1, detection: "honor", params: {}, briefMd: "Ask a real question in a channel you haven't posted in this week." },
+  { slug: "morning_greeting", tool: "slack", difficulty: 1, detection: "honor", params: {}, briefMd: "Wish the team a good day one morning, with a sun emoji. Natural." },
 
-  // ============ SLACK — difficulté 2 ============
-  { slug: "word_constellation", tool: "slack", difficulty: 2, detection: "auto", params: { word: "constellation" }, briefMd: "Place le mot **« constellation »** dans une vraie conversation Slack. Sans que ça paraisse bizarre." },
-  { slug: "word_phare", tool: "slack", difficulty: 2, detection: "auto", params: { word: "phare" }, briefMd: "Glisse le mot **« phare »** dans un message de canal public. Contexte crédible exigé." },
-  { slug: "word_boussole", tool: "slack", difficulty: 2, detection: "auto", params: { word: "boussole" }, briefMd: "Utilise le mot **« boussole »** dans une discussion d'équipe. En douceur." },
-  { slug: "word_marmotte", tool: "slack", difficulty: 2, detection: "auto", params: { word: "marmotte" }, briefMd: "Place **« marmotte »** dans une conversation. Oui, c'est dur. C'est le jeu." },
-  { slug: "three_threads_replies", tool: "slack", difficulty: 2, detection: "auto", params: { count: 3, kind: "thread_reply" }, briefMd: "Réponds dans **3 threads différents** que tu n'as pas démarrés, le même jour." },
-  { slug: "compliment_chain", tool: "slack", difficulty: 2, detection: "honor", params: {}, briefMd: "Complimente le travail de **2 collègues** dans 2 canaux différents, le même jour." },
-  { slug: "share_useful_link", tool: "slack", difficulty: 2, detection: "honor", params: {}, briefMd: "Partage un lien réellement utile à l'équipe (article, outil, doc), avec une phrase de contexte." },
-  { slug: "poll_lunch", tool: "slack", difficulty: 2, detection: "honor", params: {}, briefMd: "Lance un mini-sondage léger dans le canal d'équipe (déjeuner, café, playlist…). Fais voter au moins 2 personnes." },
-  { slug: "emoji_streak_day", tool: "slack", difficulty: 2, detection: "auto", params: { emoji: "carrot", count: 5 }, briefMd: "Pose **5 réactions 🥕** dans la semaine, réparties sur au moins 2 jours." },
-  { slug: "revive_old_thread", tool: "slack", difficulty: 2, detection: "honor", params: {}, briefMd: "Relance utilement un thread vieux de plus de 3 jours (une vraie relance, pas un « up »)." },
+  // ============ SLACK — difficulty 2 ============
+  { slug: "word_constellation", tool: "slack", difficulty: 2, detection: "auto", params: { word: "constellation" }, briefMd: "Slip the word **“constellation”** into a real Slack conversation. Without it seeming weird." },
+  { slug: "word_phare", tool: "slack", difficulty: 2, detection: "auto", params: { word: "lighthouse" }, briefMd: "Drop the word **“lighthouse”** into a public channel message. Credible context required." },
+  { slug: "word_boussole", tool: "slack", difficulty: 2, detection: "auto", params: { word: "compass" }, briefMd: "Use the word **“compass”** in a team discussion. Smoothly." },
+  { slug: "word_marmotte", tool: "slack", difficulty: 2, detection: "auto", params: { word: "groundhog" }, briefMd: "Place **“groundhog”** in a conversation. Yes, it's hard. That's the game." },
+  { slug: "three_threads_replies", tool: "slack", difficulty: 2, detection: "auto", params: { count: 3, kind: "thread_reply" }, briefMd: "Reply in **3 different threads** you didn't start, on the same day." },
+  { slug: "compliment_chain", tool: "slack", difficulty: 2, detection: "honor", params: {}, briefMd: "Compliment the work of **2 colleagues** in 2 different channels, on the same day." },
+  { slug: "share_useful_link", tool: "slack", difficulty: 2, detection: "honor", params: {}, briefMd: "Share a genuinely useful link with the team (article, tool, doc), with a line of context." },
+  { slug: "poll_lunch", tool: "slack", difficulty: 2, detection: "honor", params: {}, briefMd: "Run a light mini-poll in the team channel (lunch, coffee, playlist…). Get at least 2 people to vote." },
+  { slug: "emoji_streak_day", tool: "slack", difficulty: 2, detection: "auto", params: { emoji: "carrot", count: 5 }, briefMd: "Drop **5 🥕 reactions** during the week, spread across at least 2 days." },
+  { slug: "revive_old_thread", tool: "slack", difficulty: 2, detection: "honor", params: {}, briefMd: "Usefully revive a thread older than 3 days (a real revival, not a “bump”)." },
 
-  // ============ SLACK — difficulté 3 ============
-  { slug: "word_perissodactyle", tool: "slack", difficulty: 3, detection: "auto", params: { word: "périssodactyle" }, briefMd: "Place le mot **« périssodactyle »** dans une vraie conversation. Bonne chance, agent." },
-  { slug: "word_crepuscule_x2", tool: "slack", difficulty: 3, detection: "auto", params: { word: "crépuscule", count: 2 }, briefMd: "Utilise **« crépuscule »** dans **2 messages distincts**, à au moins un jour d'écart." },
-  { slug: "haiku_hidden", tool: "slack", difficulty: 3, detection: "honor", params: {}, briefMd: "Écris un message qui est secrètement un **haïku** (5-7-5). Personne ne doit le remarquer avant vendredi." },
-  { slug: "alphabet_message", tool: "slack", difficulty: 3, detection: "honor", params: {}, briefMd: "Poste un message utile dont les **3 premières phrases commencent par A, B, C** dans l'ordre." },
-  { slug: "five_reactions_one_message", tool: "slack", difficulty: 3, detection: "honor", params: {}, briefMd: "Obtiens **5 réactions** (de 5 personnes) sur un seul de tes messages. Sans demander." },
-  { slug: "start_thread_10_replies", tool: "slack", difficulty: 3, detection: "honor", params: {}, briefMd: "Démarre une conversation qui atteint **10 réponses**. Le sujet est libre, le talent obligatoire." },
+  // ============ SLACK — difficulty 3 ============
+  { slug: "word_perissodactyle", tool: "slack", difficulty: 3, detection: "auto", params: { word: "perissodactyl" }, briefMd: "Place the word **“perissodactyl”** in a real conversation. Good luck, agent." },
+  { slug: "word_crepuscule_x2", tool: "slack", difficulty: 3, detection: "auto", params: { word: "twilight", count: 2 }, briefMd: "Use **“twilight”** in **2 separate messages**, at least a day apart." },
+  { slug: "haiku_hidden", tool: "slack", difficulty: 3, detection: "honor", params: {}, briefMd: "Write a message that is secretly a **haiku** (5-7-5). No one should notice before Friday." },
+  { slug: "alphabet_message", tool: "slack", difficulty: 3, detection: "honor", params: {}, briefMd: "Post a useful message whose **first 3 sentences start with A, B, C** in order." },
+  { slug: "five_reactions_one_message", tool: "slack", difficulty: 3, detection: "honor", params: {}, briefMd: "Get **5 reactions** (from 5 people) on a single one of your messages. Without asking." },
+  { slug: "start_thread_10_replies", tool: "slack", difficulty: 3, detection: "honor", params: {}, briefMd: "Start a conversation that reaches **10 replies**. Topic is free, talent is mandatory." },
 
-  // ============ NOTION — difficulté 1 ============
-  { slug: "notion_emoji_page", tool: "notion", difficulty: 1, detection: "honor", params: {}, briefMd: "Change l'icône d'une page Notion que tu possèdes pour un emoji **animal**." },
-  { slug: "notion_tidy_one", tool: "notion", difficulty: 1, detection: "honor", params: {}, briefMd: "Range ou renomme proprement **une page** Notion mal titrée. Le ménage discret, c'est ton art." },
-  { slug: "notion_comment_nice", tool: "notion", difficulty: 1, detection: "honor", params: {}, briefMd: "Laisse un commentaire constructif sur la page Notion d'un collègue." },
-  { slug: "notion_add_cover", tool: "notion", difficulty: 1, detection: "honor", params: {}, briefMd: "Ajoute une cover (image de couverture) à une page qui n'en a pas." },
+  // ============ NOTION — difficulty 1 ============
+  { slug: "notion_emoji_page", tool: "notion", difficulty: 1, detection: "honor", params: {}, briefMd: "Change the icon of a Notion page you own to an **animal** emoji." },
+  { slug: "notion_tidy_one", tool: "notion", difficulty: 1, detection: "honor", params: {}, briefMd: "Tidy or cleanly rename **one** badly-titled Notion page. Quiet housekeeping is your art." },
+  { slug: "notion_comment_nice", tool: "notion", difficulty: 1, detection: "honor", params: {}, briefMd: "Leave a constructive comment on a colleague's Notion page." },
+  { slug: "notion_add_cover", tool: "notion", difficulty: 1, detection: "honor", params: {}, briefMd: "Add a cover image to a page that doesn't have one." },
 
-  // ============ NOTION — difficulté 2 ============
-  { slug: "notion_new_page", tool: "notion", difficulty: 2, detection: "auto", params: { kind: "page_created" }, briefMd: "Crée et publie une **nouvelle page Notion** utile (notes, doc, process) cette semaine." },
-  { slug: "notion_word_lagon", tool: "notion", difficulty: 2, detection: "honor", params: { word: "lagon" }, briefMd: "Glisse le mot **« lagon »** dans une page ou un commentaire Notion." },
-  { slug: "notion_checklist", tool: "notion", difficulty: 2, detection: "honor", params: {}, briefMd: "Transforme un paragraphe fouillis (le tien ou avec accord) en **checklist** propre." },
-  { slug: "notion_template", tool: "notion", difficulty: 2, detection: "honor", params: {}, briefMd: "Crée un petit **template** réutilisable pour l'équipe (réunion, compte-rendu, etc.)." },
-  { slug: "notion_link_pages", tool: "notion", difficulty: 2, detection: "honor", params: {}, briefMd: "Relie **2 pages** Notion existantes entre elles avec des mentions @page. La toile se tisse." },
+  // ============ NOTION — difficulty 2 ============
+  { slug: "notion_new_page", tool: "notion", difficulty: 2, detection: "auto", params: { kind: "page_created" }, briefMd: "Create and publish a **new, useful Notion page** (notes, doc, process) this week." },
+  { slug: "notion_word_lagon", tool: "notion", difficulty: 2, detection: "honor", params: { word: "lagoon" }, briefMd: "Slip the word **“lagoon”** into a Notion page or comment." },
+  { slug: "notion_checklist", tool: "notion", difficulty: 2, detection: "honor", params: {}, briefMd: "Turn a messy paragraph (yours, or with consent) into a clean **checklist**." },
+  { slug: "notion_template", tool: "notion", difficulty: 2, detection: "honor", params: {}, briefMd: "Create a small reusable **template** for the team (meeting, report, etc.)." },
+  { slug: "notion_link_pages", tool: "notion", difficulty: 2, detection: "honor", params: {}, briefMd: "Link **2 existing** Notion pages together with @page mentions. The web is woven." },
 
-  // ============ NOTION — difficulté 3 ============
-  { slug: "notion_glossary", tool: "notion", difficulty: 3, detection: "honor", params: {}, briefMd: "Crée un mini **glossaire** (≥5 termes) du jargon de l'équipe. Quelqu'un doit le consulter avant vendredi." },
-  { slug: "notion_archive_sweep", tool: "notion", difficulty: 3, detection: "honor", params: {}, briefMd: "Archive ou regroupe **3 pages obsolètes** (avec accord si besoin). Le grand ménage du fantôme." },
-  { slug: "notion_faq", tool: "notion", difficulty: 3, detection: "honor", params: {}, briefMd: "Démarre une **FAQ d'équipe** avec au moins 3 vraies questions/réponses." },
+  // ============ NOTION — difficulty 3 ============
+  { slug: "notion_glossary", tool: "notion", difficulty: 3, detection: "honor", params: {}, briefMd: "Create a mini **glossary** (≥5 terms) of the team's jargon. Someone must read it before Friday." },
+  { slug: "notion_archive_sweep", tool: "notion", difficulty: 3, detection: "honor", params: {}, briefMd: "Archive or merge **3 obsolete pages** (with consent if needed). The ghost's big cleanup." },
+  { slug: "notion_faq", tool: "notion", difficulty: 3, detection: "honor", params: {}, briefMd: "Start a team **FAQ** with at least 3 real questions and answers." },
 
-  // ============ KANBAN — difficulté 1 ============
-  { slug: "kanban_emoji_title", tool: "kanban", difficulty: 1, detection: "honor", params: {}, briefMd: "Ajoute un emoji pertinent au titre d'**un ticket** que tu possèdes." },
-  { slug: "kanban_clean_one", tool: "kanban", difficulty: 1, detection: "honor", params: {}, briefMd: "Complète la description d'un ticket vide (le tien). Les détectives n'y verront que du feu." },
-  { slug: "kanban_label_garden", tool: "kanban", difficulty: 1, detection: "honor", params: {}, briefMd: "Ajoute ou corrige les **labels** de 2 tickets. Jardinage de board." },
+  // ============ KANBAN — difficulty 1 ============
+  { slug: "kanban_emoji_title", tool: "kanban", difficulty: 1, detection: "honor", params: {}, briefMd: "Add a relevant emoji to the title of **one ticket** you own." },
+  { slug: "kanban_clean_one", tool: "kanban", difficulty: 1, detection: "honor", params: {}, briefMd: "Fill in the description of an empty ticket (yours). The detectives won't see a thing." },
+  { slug: "kanban_label_garden", tool: "kanban", difficulty: 1, detection: "honor", params: {}, briefMd: "Add or fix the **labels** on 2 tickets. Board gardening." },
 
-  // ============ KANBAN — difficulté 2 ============
-  { slug: "kanban_close_ticket", tool: "kanban", difficulty: 2, detection: "auto", params: { kind: "issue_completed" }, briefMd: "Termine **un ticket** cette semaine (un vrai, pas un ticket créé pour l'occasion)." },
-  { slug: "kanban_split_ticket", tool: "kanban", difficulty: 2, detection: "honor", params: {}, briefMd: "Découpe un gros ticket en **2 sous-tâches** claires." },
-  { slug: "kanban_estimate_sweep", tool: "kanban", difficulty: 2, detection: "honor", params: {}, briefMd: "Estime ou ré-estime **3 tickets** du backlog. Ni vu ni connu." },
-  { slug: "kanban_word_iceberg", tool: "kanban", difficulty: 2, detection: "honor", params: { word: "iceberg" }, briefMd: "Place le mot **« iceberg »** dans la description ou un commentaire d'un ticket." },
+  // ============ KANBAN — difficulty 2 ============
+  { slug: "kanban_close_ticket", tool: "kanban", difficulty: 2, detection: "auto", params: { kind: "issue_completed" }, briefMd: "Close **one ticket** this week (a real one, not a ticket made for the occasion)." },
+  { slug: "kanban_split_ticket", tool: "kanban", difficulty: 2, detection: "honor", params: {}, briefMd: "Split a big ticket into **2 clear subtasks**." },
+  { slug: "kanban_estimate_sweep", tool: "kanban", difficulty: 2, detection: "honor", params: {}, briefMd: "Estimate or re-estimate **3 tickets** in the backlog. No one the wiser." },
+  { slug: "kanban_word_iceberg", tool: "kanban", difficulty: 2, detection: "honor", params: { word: "iceberg" }, briefMd: "Place the word **“iceberg”** in a ticket description or comment." },
 
-  // ============ KANBAN — difficulté 3 ============
-  { slug: "kanban_two_closed", tool: "kanban", difficulty: 3, detection: "auto", params: { kind: "issue_completed", count: 2 }, briefMd: "Termine **2 tickets** cette semaine. Le Lapin le plus productif de l'Ouest." },
-  { slug: "kanban_zombie_hunt", tool: "kanban", difficulty: 3, detection: "honor", params: {}, briefMd: "Identifie **3 tickets zombies** (>30 jours sans activité) et propose leur sort dans un commentaire." },
+  // ============ KANBAN — difficulty 3 ============
+  { slug: "kanban_two_closed", tool: "kanban", difficulty: 3, detection: "auto", params: { kind: "issue_completed", count: 2 }, briefMd: "Close **2 tickets** this week. The most productive Rabbit in the West." },
+  { slug: "kanban_zombie_hunt", tool: "kanban", difficulty: 3, detection: "honor", params: {}, briefMd: "Identify **3 zombie tickets** (>30 days with no activity) and propose their fate in a comment." },
 
-  // ============ ANY — difficulté 1 ============
-  { slug: "any_compliment_tool", tool: "any", difficulty: 1, detection: "honor", params: {}, briefMd: "Dis du bien d'un outil de l'équipe (sincèrement) dans une conversation. N'importe lequel." },
-  { slug: "any_tea_coffee", tool: "any", difficulty: 1, detection: "honor", params: {}, briefMd: "Propose un café/thé virtuel ou réel à un collègue avec qui tu parles peu." },
-  { slug: "any_doc_typo", tool: "any", difficulty: 1, detection: "honor", params: {}, briefMd: "Corrige une coquille quelque part (doc, ticket, wiki). Le correcteur masqué frappe encore." },
-  { slug: "any_share_win", tool: "any", difficulty: 1, detection: "honor", params: {}, briefMd: "Partage une petite victoire de la semaine (la tienne ou celle d'un collègue, avec son accord)." },
+  // ============ ANY — difficulty 1 ============
+  { slug: "any_compliment_tool", tool: "any", difficulty: 1, detection: "honor", params: {}, briefMd: "Say something nice (sincerely) about a team tool in a conversation. Any tool." },
+  { slug: "any_tea_coffee", tool: "any", difficulty: 1, detection: "honor", params: {}, briefMd: "Offer a virtual or real coffee/tea to a colleague you rarely talk to." },
+  { slug: "any_doc_typo", tool: "any", difficulty: 1, detection: "honor", params: {}, briefMd: "Fix a typo somewhere (doc, ticket, wiki). The masked proofreader strikes again." },
+  { slug: "any_share_win", tool: "any", difficulty: 1, detection: "honor", params: {}, briefMd: "Share a small win of the week (yours, or a colleague's with their consent)." },
 
-  // ============ ANY — difficulté 2 ============
-  { slug: "any_meeting_idea", tool: "any", difficulty: 2, detection: "honor", params: {}, briefMd: "Propose **une idée concrète** en réunion ou par écrit cette semaine. Quelque chose d'actionnable." },
-  { slug: "any_help_unasked", tool: "any", difficulty: 2, detection: "honor", params: {}, briefMd: "Aide un collègue sur un sujet **sans qu'il l'ait demandé** (revue, relecture, dépannage)." },
-  { slug: "any_teach_trick", tool: "any", difficulty: 2, detection: "honor", params: {}, briefMd: "Apprends une astuce (raccourci, commande, outil) à quelqu'un. Le savoir se propage." },
-  { slug: "any_two_tools_word", tool: "any", difficulty: 2, detection: "honor", params: { word: "archipel" }, briefMd: "Place le mot **« archipel »** dans **2 outils différents** (Slack + Notion, Slack + ticket…)." },
-  { slug: "any_intro_two_people", tool: "any", difficulty: 2, detection: "honor", params: {}, briefMd: "Mets en relation 2 collègues qui devraient se parler sur un sujet précis." },
+  // ============ ANY — difficulty 2 ============
+  { slug: "any_meeting_idea", tool: "any", difficulty: 2, detection: "honor", params: {}, briefMd: "Propose **one concrete idea** in a meeting or in writing this week. Something actionable." },
+  { slug: "any_help_unasked", tool: "any", difficulty: 2, detection: "honor", params: {}, briefMd: "Help a colleague on something **without them asking** (review, proofread, troubleshooting)." },
+  { slug: "any_teach_trick", tool: "any", difficulty: 2, detection: "honor", params: {}, briefMd: "Teach someone a trick (shortcut, command, tool). Knowledge spreads." },
+  { slug: "any_two_tools_word", tool: "any", difficulty: 2, detection: "honor", params: { word: "archipelago" }, briefMd: "Place the word **“archipelago”** in **2 different tools** (Slack + Notion, Slack + ticket…)." },
+  { slug: "any_intro_two_people", tool: "any", difficulty: 2, detection: "honor", params: {}, briefMd: "Connect 2 colleagues who should talk about a specific topic." },
 
-  // ============ ANY — difficulté 3 ============
-  { slug: "any_mini_demo", tool: "any", difficulty: 3, detection: "honor", params: {}, briefMd: "Fais une **mini-démo** (≤5 min) de quelque chose que tu as fait, à au moins 2 personnes." },
-  { slug: "any_process_fix", tool: "any", difficulty: 3, detection: "honor", params: {}, briefMd: "Identifie un petit irritant de process et **propose un correctif** par écrit. Diplomatie de lapin." },
-  { slug: "any_silent_week_goal", tool: "any", difficulty: 3, detection: "honor", params: {}, briefMd: "Fixe-toi un objectif secret lundi, tiens-le toute la semaine, et révèle-le vendredi après le vote." },
-  { slug: "any_three_kindness", tool: "any", difficulty: 3, detection: "honor", params: { count: 3 }, briefMd: "Accomplis **3 gentillesses discrètes** (3 jours différents). Si on te repère, c'est raté." },
-  { slug: "any_lunch_organizer", tool: "any", difficulty: 3, detection: "honor", params: {}, briefMd: "Organise un moment d'équipe (déjeuner, pause, jeu) auquel ≥3 personnes participent." },
-  { slug: "any_doc_rescue", tool: "any", difficulty: 3, detection: "honor", params: {}, briefMd: "Trouve une info importante qui n'est documentée nulle part et **documente-la** proprement." },
+  // ============ ANY — difficulty 3 ============
+  { slug: "any_mini_demo", tool: "any", difficulty: 3, detection: "honor", params: {}, briefMd: "Give a **mini-demo** (≤5 min) of something you made, to at least 2 people." },
+  { slug: "any_process_fix", tool: "any", difficulty: 3, detection: "honor", params: {}, briefMd: "Spot a small process annoyance and **propose a fix** in writing. Rabbit diplomacy." },
+  { slug: "any_silent_week_goal", tool: "any", difficulty: 3, detection: "honor", params: {}, briefMd: "Set yourself a secret goal Monday, hold it all week, and reveal it Friday after the vote." },
+  { slug: "any_three_kindness", tool: "any", difficulty: 3, detection: "honor", params: { count: 3 }, briefMd: "Do **3 discreet kind acts** (on 3 different days). If you're spotted, it doesn't count." },
+  { slug: "any_lunch_organizer", tool: "any", difficulty: 3, detection: "honor", params: {}, briefMd: "Organize a team moment (lunch, break, game) that ≥3 people join." },
+  { slug: "any_doc_rescue", tool: "any", difficulty: 3, detection: "honor", params: {}, briefMd: "Find an important piece of info that's documented nowhere and **document it** cleanly." },
 ];
 
 if (MISSIONS_BANK.length < 60) {
-  // Garde-fou de build : la banque doit rester fournie pour éviter les répétitions.
-  // (60 missions ≈ 8 semaines sans répétition avec 3 missions/semaine et de la marge.)
-  throw new Error(`missions-bank: ${MISSIONS_BANK.length} missions, 60 attendues`);
+  // Build guard: the bank must stay well-stocked to avoid repetitions.
+  // (60 missions ≈ 8 weeks with no repeat at 3 missions/week, with margin.)
+  throw new Error(`missions-bank: ${MISSIONS_BANK.length} missions, expected 60`);
 }

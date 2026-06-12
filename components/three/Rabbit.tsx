@@ -9,7 +9,7 @@ import { useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import type { Group } from "three";
-import { deriveRabbit, type RabbitTraits } from "@/lib/rabbit-traits";
+import { deriveRabbit, type EyeStyle, type RabbitTraits } from "@/lib/rabbit-traits";
 import { mulberry32, toSeed32 } from "@/lib/prng";
 import { EquippedItems } from "./items/EquippedItems";
 
@@ -23,6 +23,8 @@ export interface RabbitProps {
   /** Mise en scène (vote/cérémonie) : fige le lapin face caméra. */
   frozen?: boolean;
   scale?: number;
+  /** Override l'expression (yeux) sans changer le reste du lapin — pour le hero animé. */
+  expression?: EyeStyle;
 }
 
 function Ear({ traits, side }: { traits: RabbitTraits; side: 1 | -1 }) {
@@ -95,8 +97,13 @@ export function Rabbit({
   wander = false,
   frozen = false,
   scale = 1,
+  expression,
 }: RabbitProps) {
-  const traits = useMemo(() => deriveRabbit(avatarSeed), [avatarSeed]);
+  const baseTraits = useMemo(() => deriveRabbit(avatarSeed), [avatarSeed]);
+  const traits = useMemo<RabbitTraits>(
+    () => (expression ? { ...baseTraits, eyeStyle: expression } : baseTraits),
+    [baseTraits, expression],
+  );
   const group = useRef<Group>(null);
   const [hovered, setHovered] = useState(false);
   // Paramètres de déambulation propres à ce lapin (seedés, stables).

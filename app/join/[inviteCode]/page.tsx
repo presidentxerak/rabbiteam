@@ -19,10 +19,10 @@ export default async function JoinPage({
 
   const notFound = (
     <main className="join-page">
-      <h1>🌊 Lien périmé ou incomplet</h1>
-      <p>Redemande ton lien magique dans Slack avec `/rabbiteam setup`.</p>
+      <h1>🌊 Expired or incomplete link</h1>
+      <p>Ask for a fresh magic link in Slack with `/rabbiteam setup`.</p>
       <Link className="btn btn-primary" href="/">
-        Accueil
+        Home
       </Link>
     </main>
   );

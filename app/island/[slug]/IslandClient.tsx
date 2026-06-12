@@ -42,10 +42,10 @@ export interface IslandClientProps {
 }
 
 const SLOT_LABELS: Record<string, string> = {
-  head: "Tête",
-  face: "Visage",
-  neck: "Cou",
-  hand: "Main",
+  head: "Head",
+  face: "Face",
+  neck: "Neck",
+  hand: "Hand",
   aura: "Aura",
 };
 
@@ -140,7 +140,7 @@ export default function IslandClient(props: IslandClientProps) {
           <>
             <h1>🏝️ {props.name}</h1>
             <div style={{ color: "var(--ink-soft)" }}>
-              {props.players.length} lapins
+              {props.players.length} rabbits
               {props.me && (
                 <>
                   {" "}· {props.me.carrots} 🥕 · streak {props.me.streak} {props.me.streak >= 3 ? "🔥" : ""}
@@ -148,29 +148,29 @@ export default function IslandClient(props: IslandClientProps) {
               )}
             </div>
 
-            <h2>Saison</h2>
+            <h2>Season</h2>
             <div className="clue-line">
               {gameStatus === "voting"
-                ? "🗳️ Le vote est ouvert ! Les lapins se rassemblent…"
+                ? "🗳️ Voting is open! The rabbits are gathering…"
                 : gameStatus === "active"
-                  ? "🐰 Le Lapin est parmi vous."
+                  ? "🐰 The Rabbit is among you."
                   : gameStatus === "revealed"
-                    ? "🎭 Saison révélée — debrief en cours."
-                    : "Pas de saison cette semaine."}
+                    ? "🎭 Season revealed — debrief in progress."
+                    : "No season this week."}
             </div>
             {voters.size > 0 && (
               <div className="clue-line">
-                {voters.size} vote{voters.size > 1 ? "s" : ""} déposé{voters.size > 1 ? "s" : ""}{" "}
-                (qui a voté, jamais pour qui 🤫)
+                {voters.size} vote{voters.size > 1 ? "s" : ""} cast{" "}
+                (who voted, never for whom 🤫)
               </div>
             )}
 
             {props.clues.length > 0 && (
               <>
-                <h2>Indices</h2>
+                <h2>Clues</h2>
                 {props.clues.map((c) => (
                   <div key={c.ordinal} className="clue-line">
-                    🔍 n°{c.ordinal} — {c.content}
+                    🔍 #{c.ordinal} — {c.content}
                   </div>
                 ))}
               </>
@@ -178,10 +178,10 @@ export default function IslandClient(props: IslandClientProps) {
 
             {props.me && (
               <>
-                <h2>Ma collection</h2>
+                <h2>My collection</h2>
                 {props.myItems.length === 0 && (
                   <div style={{ color: "var(--ink-soft)" }}>
-                    Fais tes standups, gagne des streaks, des items tomberont. 🥕
+                    Do your standups, build streaks, items will drop. 🥕
                   </div>
                 )}
                 {[...myItemsBySlot.entries()].map(([slot, items]) => (
@@ -209,15 +209,15 @@ export default function IslandClient(props: IslandClientProps) {
       </aside>
 
       {gameStatus === "voting" && !ceremony && (
-        <div className="vote-banner">🗳️ Vote ouvert dans Slack : /rabbiteam vote</div>
+        <div className="vote-banner">🗳️ Voting open in Slack: /rabbiteam vote</div>
       )}
       {ceremony && (
         <div className="vote-banner">
           {ceremony.result === "rabbit_win"
-            ? "🐰 Le Lapin s'est échappé !"
+            ? "🐰 The Rabbit escaped!"
             : ceremony.result === "detectives_win"
-              ? "🔍 Démasqué !"
-              : "😶 Match nul…"}
+              ? "🔍 Unmasked!"
+              : "😶 Draw…"}
         </div>
       )}
     </div>

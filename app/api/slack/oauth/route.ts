@@ -112,7 +112,7 @@ export async function GET(req: Request): Promise<NextResponse> {
   // les instructions sur la page de succès.
   await slackApi(access_token, "chat.postMessage", {
     channel: url.searchParams.get("installer") ?? "",
-    text: "🐰 Rabbiteam est installé ! Choisissez votre canal avec `/rabbiteam setup #canal`.",
+    text: "🐰 Rabbiteam is installed! Pick your channel with `/rabbiteam setup #channel`.",
   }).catch(() => undefined);
 
   return NextResponse.redirect(`${appUrl}/?installed=1`);

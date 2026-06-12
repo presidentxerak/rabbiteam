@@ -45,8 +45,8 @@ export async function generateMetadata({
     .limit(1)
     .maybeSingle<{ id: string }>();
   return {
-    title: `L'île de ${island.name} 🏝️ — Rabbiteam`,
-    description: "Votre équipe résisterait au Lapin ?",
+    title: `${island.name}'s island 🏝️ — Rabbiteam`,
+    description: "Would your team survive the Rabbit?",
     openGraph: lastGame
       ? { images: [`${appUrl}/api/og/reveal/${lastGame.id}`] }
       : undefined,
@@ -70,10 +70,10 @@ export default async function PublicIslandPage({
   if (!island) {
     return (
       <main className="join-page">
-        <h1>🌊 Cette île garde ses secrets</h1>
-        <p>Elle n&apos;existe pas, ou son équipage l&apos;a rendue privée.</p>
+        <h1>🌊 This island keeps its secrets</h1>
+        <p>It doesn&apos;t exist, or its crew made it private.</p>
         <Link className="btn btn-primary" href="/">
-          Créer l&apos;île de votre équipe
+          Create your team&apos;s island
         </Link>
       </main>
     );
@@ -99,16 +99,15 @@ export default async function PublicIslandPage({
       <aside className="island-panel">
         <h1>🏝️ {island.name}</h1>
         <div style={{ color: "var(--ink-soft)" }}>
-          {island.population} lapins · {island.seasons_played} saison
-          {island.seasons_played > 1 ? "s" : ""} du Lapin jouée
-          {island.seasons_played > 1 ? "s" : ""}
+          {island.population} rabbits · {island.seasons_played} Rabbit Season
+          {island.seasons_played > 1 ? "s" : ""} played
         </div>
         <p>
-          Cette île pousse avec le vrai travail de l&apos;équipe. Chaque semaine, un Lapin secret y
-          sème ses missions…
+          This island grows from the team&apos;s real work. Every week, a secret Rabbit sows its
+          missions here…
         </p>
         <Link className="btn btn-primary" href="/" style={{ display: "block", textAlign: "center" }}>
-          Créer l&apos;île de votre équipe 🥕
+          Create your team&apos;s island 🥕
         </Link>
       </aside>
     </div>

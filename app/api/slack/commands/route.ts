@@ -43,7 +43,7 @@ export async function POST(req: Request): Promise<NextResponse> {
     try {
       const ctx = await resolveSlackCtx(cmd.team_id);
       if (!ctx) {
-        await respond(cmd.response_url, "Rabbiteam n'est pas (encore) installé ici. → " + APP_URL());
+        await respond(cmd.response_url, "Rabbiteam isn't installed here (yet). → " + APP_URL());
         return;
       }
       switch (sub.toLowerCase()) {
@@ -58,12 +58,12 @@ export async function POST(req: Request): Promise<NextResponse> {
         default:
           return await respond(
             cmd.response_url,
-            "🐰 *Commandes* : `/rabbiteam setup #canal` · `standup` · `clue` · `unlock <n>` · `vote` · `island` · `invite`",
+            "🐰 *Commands*: `/rabbiteam setup #channel` · `standup` · `clue` · `unlock <n>` · `vote` · `island` · `invite`",
           );
       }
     } catch (e) {
       console.error("[slack/commands] failed:", e);
-      await respond(cmd.response_url, "Petit souci de terrier, réessayez. 🐰").catch(() => undefined);
+      await respond(cmd.response_url, "Small burrow hiccup, please try again. 🐰").catch(() => undefined);
     }
   });
 
@@ -126,7 +126,7 @@ async function handleSetup(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
     await postDM(
       ctx.token,
       slackUserId,
-      `🐰 Bienvenue sur l'île *${ctx.island.name}* ! Découvre ton lapin (il est déjà né, il t'attend) : ${link}`,
+      `🐰 Welcome to the *${ctx.island.name}* island! Meet your rabbit (already born, waiting for you): ${link}`,
     );
   }
 
@@ -134,11 +134,11 @@ async function handleSetup(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   await checkReferralActivation(ctx.orgId).catch(() => undefined);
 
   const skippedNote = skipped > 0
-    ? `\n⚠️ ${skipped} membre(s) non ajoutés (limite du plan Free : 8 joueurs). → ${APP_URL()}/#pricing`
+    ? `\n⚠️ ${skipped} member(s) not added (Free plan limit: 8 players). → ${APP_URL()}/#pricing`
     : "";
   await respond(
     cmd.response_url,
-    `🏝️ Canal <#${channelId}> configuré. ${created} lapin(s) invité(s) par DM.${skippedNote}\nLa première Saison du Lapin démarre lundi 9h.`,
+    `🏝️ Channel <#${channelId}> configured. ${created} rabbit(s) invited by DM.${skippedNote}\nThe first Rabbit Season starts Monday 9am.`,
   );
 }
 
@@ -147,7 +147,7 @@ async function handleSetup(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
 async function handleStandup(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   const player = await resolvePlayer(ctx.island.id, cmd.user_id);
   if (!player) {
-    await respond(cmd.response_url, "Tu n'as pas encore de lapin ici — demande un `/rabbiteam setup` à ton équipe 🐰");
+    await respond(cmd.response_url, "You don't have a rabbit here yet — ask your team to run `/rabbiteam setup` 🐰");
     return;
   }
   await openModal(ctx.token, cmd.trigger_id, standupModal(ctx.island.id));
@@ -167,7 +167,7 @@ async function handleIndice(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
     .limit(1)
     .maybeSingle<GameRow>();
   if (!game) {
-    await respond(cmd.response_url, "Pas de saison en cours. Le Lapin revient lundi 9h 🐰");
+    await respond(cmd.response_url, "No season in progress. The Rabbit returns Monday 9am 🐰");
     return;
   }
   const { data: clues } = await admin
@@ -184,19 +184,19 @@ async function handleIndice(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
     : { data: [] };
   const unlocked = new Set((unlocks ?? []).map((u) => u.ordinal as number));
 
-  const lines: string[] = ["🔍 *Indices de la saison*"];
+  const lines: string[] = ["🔍 *Season clues*"];
   let any = false;
   for (const c of clues ?? []) {
     const ordinal = c.ordinal as number;
     if (c.revealed_at || unlocked.has(ordinal)) {
-      lines.push(`• Indice n°${ordinal} — ${c.content}`);
+      lines.push(`• Clue #${ordinal} — ${c.content}`);
       any = true;
     } else if (c.tier === "paid") {
-      lines.push(`• Indice n°${ordinal} — 🔒 à débloquer (${c.price} 🥕) : \`/rabbiteam unlock ${ordinal}\` ou via l'île web`);
+      lines.push(`• Clue #${ordinal} — 🔒 unlock (${c.price} 🥕): \`/rabbiteam unlock ${ordinal}\` or via the web island`);
       any = true;
     }
   }
-  if (!any) lines.push("Aucun indice publié pour l'instant. Premier indice mardi 10h.");
+  if (!any) lines.push("No clue published yet. First clue Tuesday 10am.");
   await respond(cmd.response_url, lines.join("\n"));
 }
 
@@ -206,7 +206,7 @@ async function handleDebloquer(ctx: SlackCtx, cmd: SlackCommand): Promise<void> 
   const admin = createSupabaseAdminClient();
   const player = await resolvePlayer(ctx.island.id, cmd.user_id);
   if (!player) {
-    await respond(cmd.response_url, "Tu n'as pas encore de lapin ici 🐰");
+    await respond(cmd.response_url, "You don't have a rabbit here yet 🐰");
     return;
   }
   const ordinal = Number(cmd.text.trim().split(/\s+/)[1] ?? "2");
@@ -219,7 +219,7 @@ async function handleDebloquer(ctx: SlackCtx, cmd: SlackCommand): Promise<void> 
     .limit(1)
     .maybeSingle<{ id: string }>();
   if (!game) {
-    await respond(cmd.response_url, "Pas de saison en cours 🐰");
+    await respond(cmd.response_url, "No season in progress 🐰");
     return;
   }
   const { data: clue } = await admin
@@ -230,7 +230,7 @@ async function handleDebloquer(ctx: SlackCtx, cmd: SlackCommand): Promise<void> 
     .eq("tier", "paid")
     .maybeSingle<{ content: string; price: number; tier: string }>();
   if (!clue) {
-    await respond(cmd.response_url, "Cet indice n'est pas à vendre 🐰");
+    await respond(cmd.response_url, "This clue isn't for sale 🐰");
     return;
   }
   const { data: already } = await admin
@@ -241,11 +241,11 @@ async function handleDebloquer(ctx: SlackCtx, cmd: SlackCommand): Promise<void> 
     .eq("player_id", player.id)
     .maybeSingle();
   if (already) {
-    await respond(cmd.response_url, `🔓 Déjà débloqué — ${clue.content}`);
+    await respond(cmd.response_url, `🔓 Already unlocked — ${clue.content}`);
     return;
   }
   if (player.carrots < clue.price) {
-    await respond(cmd.response_url, `Il te faut ${clue.price} 🥕 (tu en as ${player.carrots}). Les standups, c'est la banque.`);
+    await respond(cmd.response_url, `You need ${clue.price} 🥕 (you have ${player.carrots}). Standups are the bank.`);
     return;
   }
   await admin.from("players").update({ carrots: player.carrots - clue.price }).eq("id", player.id);
@@ -255,7 +255,7 @@ async function handleDebloquer(ctx: SlackCtx, cmd: SlackCommand): Promise<void> 
     player_id: player.id,
     paid: clue.price,
   });
-  await respond(cmd.response_url, `🔓 *Indice n°${ordinal}* — ${clue.content}\n(-${clue.price} 🥕. Ce que tu en dis à l'équipe… c'est ton affaire 😏)`);
+  await respond(cmd.response_url, `🔓 *Clue #${ordinal}* — ${clue.content}\n(-${clue.price} 🥕. What you tell the team… that's your business 😏)`);
 }
 
 // ============ /rabbiteam vote ============
@@ -264,7 +264,7 @@ async function handleVote(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   const admin = createSupabaseAdminClient();
   const player = await resolvePlayer(ctx.island.id, cmd.user_id);
   if (!player) {
-    await respond(cmd.response_url, "Tu n'as pas encore de lapin ici 🐰");
+    await respond(cmd.response_url, "You don't have a rabbit here yet 🐰");
     return;
   }
   const { data: game } = await admin
@@ -276,7 +276,7 @@ async function handleVote(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
     .limit(1)
     .maybeSingle<GameRow>();
   if (!game) {
-    await respond(cmd.response_url, "Le terrier ouvre vendredi 11h 🐰");
+    await respond(cmd.response_url, "The burrow opens Friday 11am 🐰");
     return;
   }
   const { data: players } = await admin
@@ -285,7 +285,7 @@ async function handleVote(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
     .eq("island_id", ctx.island.id)
     .eq("is_active", true);
   const candidates = ((players ?? []) as PlayerRow[])
-    .filter((p) => p.id !== player.id) // on ne s'auto-accuse pas
+    .filter((p) => p.id !== player.id) // no self-accusation
     .map((p) => ({ playerId: p.id, name: p.display_name }));
   await openModal(ctx.token, cmd.trigger_id, voteModal(game.id, candidates));
 }
@@ -308,22 +308,22 @@ async function handleIle(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
     .maybeSingle<{ status: string }>();
   const season = game
     ? game.status === "voting"
-      ? "🗳️ vote en cours !"
-      : "🐰 saison en cours"
-    : "pas de saison cette semaine";
+      ? "🗳️ vote in progress!"
+      : "🐰 season in progress"
+    : "no season this week";
   await respond(
     cmd.response_url,
-    `🏝️ *${ctx.island.name}* — ${population ?? 0} lapins · ${season}\n${APP_URL()}/island/${ctx.island.slug}`,
+    `🏝️ *${ctx.island.name}* — ${population ?? 0} rabbits · ${season}\n${APP_URL()}/island/${ctx.island.slug}`,
   );
 }
 
-// ============ /rabbiteam inviter ============
+// ============ /rabbiteam invite ============
 
 async function handleInviter(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   await respond(
     cmd.response_url,
-    `🥕✨ *Parrainage Carotte Dorée* — partage ce lien :\n${APP_URL()}/?ref=${ctx.island.id}\n` +
-      "Quand une équipe s'installe via ce lien et atteint 5 joueurs actifs, " +
-      "TOUTE votre île (et la leur) reçoit la Carotte Dorée legendary + un palmier doré. 🌴",
+    `🥕✨ *Golden Carrot referral* — share this link:\n${APP_URL()}/?ref=${ctx.island.id}\n` +
+      "When a team installs via this link and reaches 5 active players, " +
+      "your WHOLE island (and theirs) receives the legendary Golden Carrot + a golden palm. 🌴",
   );
 }

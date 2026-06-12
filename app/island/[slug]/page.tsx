@@ -20,10 +20,10 @@ export default async function IslandPage({ params }: { params: Promise<{ slug: s
   if (!user) {
     return (
       <main className="join-page">
-        <h1>🐰 Île privée</h1>
-        <p>Ouvre ton lien magique reçu en DM Slack pour entrer sur l&apos;île.</p>
+        <h1>🐰 Private island</h1>
+        <p>Open the magic link you got in your Slack DM to step onto the island.</p>
         <Link className="btn btn-primary" href="/">
-          Retour à l&apos;accueil
+          Back home
         </Link>
       </main>
     );
@@ -38,10 +38,10 @@ export default async function IslandPage({ params }: { params: Promise<{ slug: s
   if (!island) {
     return (
       <main className="join-page">
-        <h1>🌊 Rien ici…</h1>
-        <p>Cette île n&apos;existe pas, ou tu n&apos;en es pas membre.</p>
+        <h1>🌊 Nothing here…</h1>
+        <p>This island doesn&apos;t exist, or you&apos;re not a member.</p>
         <Link className="btn btn-primary" href="/">
-          Retour à l&apos;accueil
+          Back home
         </Link>
       </main>
     );

@@ -42,19 +42,19 @@ export function standupModal(islandId: string): Record<string, unknown> {
     type: "modal",
     callback_id: "standup_submit",
     private_metadata: islandId,
-    title: { type: "plain_text", text: "Standup du jour 🐰" },
-    submit: { type: "plain_text", text: "Poser mon intention" },
-    close: { type: "plain_text", text: "Plus tard" },
+    title: { type: "plain_text", text: "Today's standup 🐰" },
+    submit: { type: "plain_text", text: "Drop my intention" },
+    close: { type: "plain_text", text: "Later" },
     blocks: [
       {
         type: "input",
         block_id: "intention_block",
-        label: { type: "plain_text", text: "Mon intention du jour" },
+        label: { type: "plain_text", text: "My intention for today" },
         element: {
           type: "plain_text_input",
           action_id: "intention",
           max_length: 140,
-          placeholder: { type: "plain_text", text: "Aujourd'hui je termine la maquette…" },
+          placeholder: { type: "plain_text", text: "Today I'm finishing the mockup…" },
         },
       },
       {
@@ -64,13 +64,13 @@ export function standupModal(islandId: string): Record<string, unknown> {
         element: {
           type: "static_select",
           action_id: "mood",
-          initial_option: { text: { type: "plain_text", text: "🙂 Ça va" }, value: "🙂" },
+          initial_option: { text: { type: "plain_text", text: "🙂 Okay" }, value: "🙂" },
           options: [
-            { text: { type: "plain_text", text: "🙂 Ça va" }, value: "🙂" },
-            { text: { type: "plain_text", text: "🚀 En forme" }, value: "🚀" },
-            { text: { type: "plain_text", text: "😴 Fatigué·e" }, value: "😴" },
-            { text: { type: "plain_text", text: "🤯 Débordé·e" }, value: "🤯" },
-            { text: { type: "plain_text", text: "🎉 Excellent" }, value: "🎉" },
+            { text: { type: "plain_text", text: "🙂 Okay" }, value: "🙂" },
+            { text: { type: "plain_text", text: "🚀 On fire" }, value: "🚀" },
+            { text: { type: "plain_text", text: "😴 Tired" }, value: "😴" },
+            { text: { type: "plain_text", text: "🤯 Swamped" }, value: "🤯" },
+            { text: { type: "plain_text", text: "🎉 Great" }, value: "🎉" },
           ],
         },
       },
@@ -88,15 +88,15 @@ export function voteModal(
     type: "modal",
     callback_id: "vote_submit",
     private_metadata: gameId,
-    title: { type: "plain_text", text: "Qui est le Lapin ? 🕵️" },
-    submit: { type: "plain_text", text: "Voter" },
-    close: { type: "plain_text", text: "Annuler" },
+    title: { type: "plain_text", text: "Who is the Rabbit? 🕵️" },
+    submit: { type: "plain_text", text: "Vote" },
+    close: { type: "plain_text", text: "Cancel" },
     blocks: [
-      section("Désigne ton suspect. Tu peux changer ton vote jusqu'à la clôture (16h)."),
+      section("Name your suspect. You can change your vote until voting closes (4pm)."),
       {
         type: "input",
         block_id: "suspect_block",
-        label: { type: "plain_text", text: "Mon suspect" },
+        label: { type: "plain_text", text: "My suspect" },
         element: {
           type: "static_select",
           action_id: "suspect",
@@ -117,10 +117,10 @@ export function rabbitMissionsDM(
 ): Block[] {
   const stars = (d: number) => "⭐".repeat(d);
   const blocks: Block[] = [
-    section("🤫 *C'est toi.* Cette semaine, tu es **le Lapin**."),
+    section("🤫 *It's you.* This week, you are **the Rabbit**."),
     section(
-      "Voici tes 3 missions. Accomplis-en *au moins 2* avant vendredi 11h sans te faire repérer. " +
-        "Les missions détectées automatiquement se cochent toutes seules ; les autres, coche-les toi-même (parole de Lapin).",
+      "Here are your 3 missions. Pull off *at least 2* before Friday 11am without getting spotted. " +
+        "Auto-detected missions check themselves off; for the others, mark them yourself (Rabbit's honor).",
     ),
     divider(),
   ];
@@ -128,49 +128,49 @@ export function rabbitMissionsDM(
     blocks.push(section(`*Mission ${i + 1}* ${stars(m.difficulty)}\n${m.briefMd}`));
     if (m.detection === "honor") {
       blocks.push(
-        actions(button("J'ai accompli cette mission ✅", "mission_done", m.gameMissionId)),
+        actions(button("I completed this mission ✅", "mission_done", m.gameMissionId)),
       );
     } else {
-      blocks.push(context("🔎 Détection automatique — rien à faire, je te confirme en DM."));
+      blocks.push(context("🔎 Auto-detected — nothing to do, I'll confirm in your DMs."));
     }
   });
   blocks.push(divider());
-  blocks.push(context("Ce message disparaît de ta mémoire vendredi 16h30. Bonne chance, agent. 🐰"));
+  blocks.push(context("This message self-destructs from your memory Friday 4:30pm. Good luck, agent. 🐰"));
   return blocks;
 }
 
-// ============ Annonces publiques de saison ============
+// ============ Public season announcements ============
 
 export function seasonOpenBlocks(seasonNumber: number): Block[] {
   return [
-    section(`🐰 *Saison #${seasonNumber} ouverte.* Le Lapin est parmi vous.`),
-    context("Premier indice mardi 10h. Restez attentifs…"),
+    section(`🐰 *Season #${seasonNumber} is open.* The Rabbit is among you.`),
+    context("First clue Tuesday 10am. Stay sharp…"),
   ];
 }
 
 export function votingOpenBlocks(islandUrl: string): Block[] {
   return [
-    section("🗳️ *Le terrier est ouvert.* Qui est le Lapin cette semaine ?"),
-    actions(button("Voter 🗳️", "open_vote_modal"), linkButton("Voir l'île 🏝️", islandUrl)),
-    context("Vote modifiable jusqu'à 16h. Sur l'île, les lapins se rassemblent déjà…"),
+    section("🗳️ *The burrow is open.* Who is the Rabbit this week?"),
+    actions(button("Vote 🗳️", "open_vote_modal"), linkButton("View the island 🏝️", islandUrl)),
+    context("Vote editable until 4pm. On the island, the rabbits are already gathering…"),
   ];
 }
 
 export function standupReminderBlocks(): Block[] {
   return [
-    section("☀️ *Standup du jour* — pose ton intention en 30 secondes, gagne tes carottes."),
-    actions(button("Faire mon standup 🥕", "open_standup_modal")),
+    section("☀️ *Today's standup* — drop your intention in 30 seconds, earn your carrots."),
+    actions(button("Do my standup 🥕", "open_standup_modal")),
   ];
 }
 
 export function clueBlocks(ordinal: number, content: string | null, price: number): Block[] {
   if (content) {
-    return [section(`🔍 *Indice n°${ordinal}* — ${content}`)];
+    return [section(`🔍 *Clue #${ordinal}* — ${content}`)];
   }
   return [
-    section(`🔍 *Indice n°${ordinal}* — disponible au terrier.`),
-    actions(button(`Débloquer (${price} 🥕)`, "unlock_clue", String(ordinal))),
-    context("L'achat est individuel. Ce que tu en dis ensuite… c'est ton affaire. 😏"),
+    section(`🔍 *Clue #${ordinal}* — available at the burrow.`),
+    actions(button(`Unlock (${price} 🥕)`, "unlock_clue", String(ordinal))),
+    context("Purchase is individual. What you say about it afterwards… that's your business. 😏"),
   ];
 }
 
@@ -179,6 +179,6 @@ export function dropAnnounceBlocks(playerName: string, itemName: string, rarity:
     common: "⚪", uncommon: "🟢", rare: "🔵", epic: "🟣", legendary: "🟡",
   };
   return [
-    section(`✨ *${playerName}* a débloqué *${itemName}* ${rarityEmoji[rarity] ?? ""} — ${reason}`),
+    section(`✨ *${playerName}* unlocked *${itemName}* ${rarityEmoji[rarity] ?? ""} — ${reason}`),
   ];
 }

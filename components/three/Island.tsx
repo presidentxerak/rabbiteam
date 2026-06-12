@@ -15,6 +15,7 @@ import { Bush } from "./Bush";
 import { Beach } from "./Beach";
 import { Decorations, ISLAND_RADIUS } from "./Decorations";
 import { Rabbit } from "./Rabbit";
+import { Clouds } from "./Clouds";
 import { RevealCeremony, type CeremonyState } from "./effects/RevealCeremony";
 
 export interface IslandRabbit {
@@ -187,6 +188,9 @@ export function Island({
         <circleGeometry args={[2.3, 32]} />
         <meshToonMaterial color="#A8E0A0" />
       </mesh>
+
+      {/* nuages kawaii au-dessus de l'île */}
+      <Clouds seed={seed} count={5} />
 
       <group position={[0, 0.2, 0]}>
         <House teamName={teamName} garland={hasGarland} />

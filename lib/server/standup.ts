@@ -39,7 +39,7 @@ export async function handleStandupSubmission(opts: {
   );
   if (existing) {
     await postEphemeral(token, island.slack_channel_id, player.slack_user_id,
-      "Intention mise à jour ✏️ (les carottes du jour étaient déjà dans le terrier)");
+      "Intention updated ✏️ (today's carrots were already in the burrow)");
     return;
   }
 
@@ -81,7 +81,7 @@ export async function handleStandupSubmission(opts: {
         island.slack_channel_id,
         player.display_name,
         item,
-        `streak de ${newStreak} jours`,
+        `${newStreak}-day streak`,
       );
     }
   }

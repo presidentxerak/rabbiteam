@@ -78,7 +78,7 @@ export async function checkReferralActivation(referredOrgId: string): Promise<vo
       await postMessage(
         token,
         island.slack_channel_id,
-        "🥕✨ *CAROTTE DORÉE !* Un parrainage vient d'aboutir : toute l'île reçoit la Carotte Dorée (legendary) et un palmier doré pousse sur la plage. Merci les lapins.",
+        "🥕✨ *GOLDEN CARROT!* A referral just landed: the whole island receives the Golden Carrot (legendary) and a golden palm grows on the beach. Thank you, rabbits.",
       );
     }
   }

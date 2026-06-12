@@ -1,8 +1,9 @@
 /**
- * Landing marketing. Capture du parrainage : /?ref=[island_id] est reporté
- * dans le `state` OAuth Slack (récompense Carotte Dorée au seuil de 5 joueurs).
+ * Marketing landing. Referral capture: /?ref=[island_id] is forwarded into
+ * the Slack OAuth `state` (Golden Carrot reward at the 5-active-players gate).
  */
 import LandingIsland from "@/components/LandingIsland";
+import HeroRabbit from "@/components/HeroRabbit";
 
 type SearchParams = Promise<{ ref?: string; installed?: string; error?: string }>;
 
@@ -32,130 +33,144 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
   return (
     <main className="landing">
       <LandingIsland />
+
       <header className="hero">
-        <span className="tag">🐰 Pour les équipes de 5 à 50 personnes</span>
+        <div className="hackathon-badge">🏆 Anthropic × Motier — Hackathon</div>
+
+        <HeroRabbit />
+
+        <span className="tag">🐰 For teams of 5 to 50 people</span>
         <h1>
-          Votre équipe a une île.
+          Your team has an island.
           <br />
-          Et un imposteur. 🏝️
+          And an impostor. 🏝️
         </h1>
         <p className="sub">
-          Rabbiteam transforme votre semaine en jeu : une île 3D kawaii qui pousse avec votre vrai
-          travail, un standup de 30 secondes qui rapporte des carottes, et chaque lundi… un
-          collègue secrètement désigné <strong>Le Lapin</strong>. Saurez-vous le démasquer vendredi ?
+          Rabbiteam turns your week into a game: a kawaii 3D island that grows from your team&apos;s
+          real work, a 30-second standup that pays in carrots, and every Monday… a teammate secretly
+          named <strong>The Rabbit</strong>. Can you unmask them by Friday?
         </p>
         {installed && (
           <p className="tag" style={{ background: "#cdebd3" }}>
-            ✅ Installé ! Tapez `/rabbiteam setup #canal` dans Slack pour commencer.
+            ✅ Installed! Type `/rabbiteam setup #channel` in Slack to get started.
           </p>
         )}
         {error && (
           <p className="tag" style={{ background: "#ffd9d4" }}>
-            ⚠️ L&apos;installation a échoué, réessayez.
+            ⚠️ Installation failed, please try again.
           </p>
         )}
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
           <a className="btn btn-primary" href={installUrl}>
-            Ajouter à Slack 🥕
+            Add to Slack 🥕
           </a>
           <a className="btn btn-ghost" href="#how">
-            Comment ça marche ?
+            How does it work?
           </a>
         </div>
         {ref && (
           <p style={{ marginTop: 16, color: "var(--ink-soft)" }}>
-            🥕✨ Vous arrivez via un parrainage : à 5 joueurs actifs, votre île ET celle de vos
-            parrains reçoivent la Carotte Dorée legendary.
+            🥕✨ You arrived through a referral: at 5 active players, your island AND your referrer&apos;s
+            both receive the legendary Golden Carrot.
           </p>
         )}
       </header>
 
-      <section id="how" className="features">
+      {/* ===== How it works ===== */}
+      <section id="how" className="how">
+        <h2 style={{ textAlign: "center", fontSize: 32 }}>Three layers, one loop</h2>
+        <div className="how-steps">
+          <div className="card">
+            <span className="step-num">1</span>
+            <h3>🏝️ Ambient — daily, zero effort</h3>
+            <p>
+              Slack messages, Notion pages, finished tickets: every real signal grows a flower, a
+              lantern, a seashell on your 3D island. 100% collective cosmetics —{" "}
+              <strong>never</strong> an individual performance ranking.
+            </p>
+          </div>
+          <div className="card">
+            <span className="step-num">2</span>
+            <h3>🥕 Ritual — daily, 30 seconds</h3>
+            <p>
+              Each morning, drop your intention of the day and a mood. You earn carrots, your streak
+              climbs, and rare items unlock. Your rabbit has never been this well dressed.
+            </p>
+          </div>
+          <div className="card">
+            <span className="step-num">3</span>
+            <h3>🕵️ Event — weekly, The Rabbit Season</h3>
+            <p>
+              Every Monday one player secretly becomes <strong>The Rabbit</strong> with 3 discreet
+              missions to slip into your real tools. Clues Tuesday, Wednesday (paid in carrots 😏) and
+              Thursday. Vote Friday 11am. Dramatic reveal on the island at 4:30pm.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="features">
         <div className="card">
-          <h3>🏝️ L&apos;île qui pousse toute seule</h3>
+          <h3>🔒 Secret guarded by the database</h3>
           <p>
-            Messages Slack, pages Notion, tickets terminés : chaque signal réel fait pousser une
-            fleur, une lanterne, un coquillage. Zéro effort, 100% cosmétique collectif —{" "}
-            <strong>jamais</strong> de classement de performance individuelle.
+            The Rabbit&apos;s identity is protected at the database level (Row Level Security): even a
+            curious developer with the console open sees nothing. The suspense is technical.
           </p>
         </div>
         <div className="card">
-          <h3>🥕 Le standup qui rapporte</h3>
+          <h3>⚡ 3 minutes a day, max</h3>
           <p>
-            Chaque matin, 30 secondes : votre intention du jour, votre humeur. Vous gagnez des
-            carottes, votre streak grimpe, des items rares tombent. Votre lapin n&apos;a jamais été
-            aussi bien habillé.
+            The game lives in Slack. The 3D island is the stage, not a chore. No extra meetings, no
+            notification overload, no report to fill in.
           </p>
         </div>
         <div className="card">
-          <h3>🕵️ La Saison du Lapin</h3>
+          <h3>🎁 A 100% in-game economy</h3>
           <p>
-            Chaque lundi, un joueur reçoit en secret 3 missions à glisser dans vos vrais outils.
-            Indices mardi, mercredi (payant en carottes 😏) et jeudi. Vote vendredi 11h. Révélation
-            dramatique sur l&apos;île à 16h30.
-          </p>
-        </div>
-        <div className="card">
-          <h3>🔒 Secret garanti par la base</h3>
-          <p>
-            L&apos;identité du Lapin est protégée au niveau base de données (Row Level Security) :
-            même un développeur curieux avec la console ouverte ne voit rien. Le suspense est
-            technique.
-          </p>
-        </div>
-        <div className="card">
-          <h3>⚡ 3 minutes par jour, max</h3>
-          <p>
-            Le jeu vit dans Slack. L&apos;île 3D est la scène, pas l&apos;obligation. Aucune réunion
-            en plus, aucune notification de trop, aucun rapport à remplir.
-          </p>
-        </div>
-        <div className="card">
-          <h3>🎁 Une économie 100% jeu</h3>
-          <p>
-            Aucun achat d&apos;items en euros. Tout se gagne : streaks, victoires, saisons jouées,
-            parrainages. La Carotte Dorée se mérite.
+            No buying items with money. Everything is earned: streaks, victories, seasons played,
+            referrals. The Golden Carrot has to be deserved.
           </p>
         </div>
       </section>
 
-      <section id="pricing">
-        <h2 style={{ textAlign: "center", fontSize: 32 }}>Un prix par île, pas par tête</h2>
+      {/* ===== Pricing (hidden for now, kept in code) ===== */}
+      <section id="pricing" hidden style={{ display: "none" }}>
+        <h2 style={{ textAlign: "center", fontSize: 32 }}>One price per island, not per head</h2>
         <div className="pricing">
           <div className="card">
             <h3>Free</h3>
             <div className="price">
-              0 € <small>pour toujours</small>
+              €0 <small>forever</small>
             </div>
             <ul>
-              <li>1 île, 8 joueurs max</li>
-              <li>1 Saison du Lapin / mois</li>
-              <li>Historique d&apos;île 90 jours</li>
-              <li>Slack uniquement</li>
+              <li>1 island, 8 players max</li>
+              <li>1 Rabbit Season / month</li>
+              <li>90-day island history</li>
+              <li>Slack only</li>
             </ul>
           </div>
           <div className="card" style={{ border: "3px solid var(--coral)" }}>
             <h3>Team 🥕</h3>
             <div className="price">
-              29 € <small>/ mois / île</small>
+              €29 <small>/ month / island</small>
             </div>
             <ul>
-              <li>Joueurs illimités</li>
-              <li>Saison chaque semaine</li>
-              <li>Historique permanent</li>
+              <li>Unlimited players</li>
+              <li>A season every week</li>
+              <li>Permanent history</li>
               <li>Notion + Kanban</li>
-              <li>Items saisonniers</li>
+              <li>Seasonal items</li>
             </ul>
           </div>
           <div className="card">
             <h3>Company</h3>
             <div className="price">
-              199 € <small>/ mois</small>
+              €199 <small>/ month</small>
             </div>
             <ul>
-              <li>Îles illimitées</li>
-              <li>Archipel inter-équipes (v2)</li>
-              <li>SSO, admin centralisé</li>
+              <li>Unlimited islands</li>
+              <li>Cross-team archipelago (v2)</li>
+              <li>SSO, central admin</li>
             </ul>
           </div>
         </div>
@@ -163,11 +178,12 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
 
       <footer style={{ textAlign: "center", marginTop: 72, color: "var(--ink-soft)" }}>
         <a className="btn btn-primary" href={installUrl}>
-          Ajouter à Slack 🥕
+          Add to Slack 🥕
         </a>
         <p style={{ marginTop: 24 }}>
-          Rabbiteam — le Lapin est parmi vous. · Aucune métrique individuelle, jamais.
+          Rabbiteam — the Rabbit is among you. · No individual metrics, ever.
         </p>
+        <p style={{ fontSize: 13 }}>Built for the Anthropic × Motier Hackathon.</p>
       </footer>
     </main>
   );

@@ -70,7 +70,7 @@ async function completeMission(
   await postDM(
     token,
     rabbit.slack_user_id,
-    "🕶️ Mission accomplie. Personne n'a rien vu ?",
+    "🕶️ Mission accomplished. Did anyone notice?",
   );
 }
 
@@ -93,7 +93,7 @@ async function bumpProgress(
     await completeMission(gm, rabbit, token, { [key]: list });
   } else {
     await admin.from("game_missions").update({ proof: { progress: list } }).eq("id", gm.id);
-    await postDM(token, rabbit.slack_user_id, `🥕 Mission en cours : ${list.length}/${target}. Discrétion absolue.`);
+    await postDM(token, rabbit.slack_user_id, `🥕 Mission in progress: ${list.length}/${target}. Stay discreet.`);
   }
 }
 
@@ -221,7 +221,7 @@ export async function handleMissionDoneButton(opts: {
     .update({ status: "done", proof: { honor: true }, completed_at: new Date().toISOString() })
     .eq("id", gm.id)
     .eq("status", "pending");
-  await postDM(opts.token, rabbit.slack_user_id, "✅ Mission cochée. Parole de Lapin. 🐰");
+  await postDM(opts.token, rabbit.slack_user_id, "✅ Mission checked off. Rabbit's honor. 🐰");
 }
 
 // ============ Notion : page publiée ============

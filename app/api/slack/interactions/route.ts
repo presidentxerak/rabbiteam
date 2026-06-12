@@ -54,7 +54,7 @@ export async function POST(req: Request): Promise<NextResponse> {
       if (!sub.success) {
         return NextResponse.json({
           response_action: "errors",
-          errors: { intention_block: "140 caractères max, et au moins un mot 🐰" },
+          errors: { intention_block: "140 characters max, and at least one word 🐰" },
         });
       }
       after(() => processStandup(teamId, interaction, sub.data).catch(logErr));
@@ -125,7 +125,7 @@ async function processVote(teamId: string, interaction: SlackInteraction): Promi
     .maybeSingle<GameRow>();
   if (!game || game.status !== "voting") {
     await postEphemeral(ctx.token, ctx.island.slack_channel_id, player.slack_user_id,
-      "Le terrier est fermé — les votes sont clos. 🐰");
+      "The burrow is closed — voting has ended. 🐰");
     return;
   }
   // Suspect valide = joueur actif de la même île, pas soi-même.
@@ -143,7 +143,7 @@ async function processVote(teamId: string, interaction: SlackInteraction): Promi
     { onConflict: "game_id,voter_id" },
   );
   await postEphemeral(ctx.token, ctx.island.slack_channel_id, player.slack_user_id,
-    "🗳️ Vote enregistré. Modifiable jusqu'à 16h. Motus.");
+    "🗳️ Vote recorded. Editable until 4pm. Mum's the word.");
   // L'île montre QUI a voté, jamais pour qui.
   await broadcastToIsland(ctx.island.id, "vote_cast", { gameId, voterPlayerId: player.id });
 }
@@ -181,7 +181,7 @@ async function processBlockAction(teamId: string, interaction: SlackInteraction)
     case "unlock_clue": {
       // Bouton du canal : on renvoie vers la commande dédiée (achat explicite).
       await postEphemeral(ctx.token, ctx.island.slack_channel_id, interaction.user.id,
-        `Pour débloquer : \`/rabbiteam unlock ${action.value ?? 2}\` 🥕`);
+        `To unlock: \`/rabbiteam unlock ${action.value ?? 2}\` 🥕`);
       return;
     }
   }
@@ -200,7 +200,7 @@ async function openVoteModalFor(ctx: SlackCtx, slackUserId: string, triggerId: s
     .maybeSingle<{ id: string }>();
   if (!game) {
     await postEphemeral(ctx.token, ctx.island.slack_channel_id, slackUserId,
-      "Le terrier ouvre vendredi 11h 🐰");
+      "The burrow opens Friday 11am 🐰");
     return;
   }
   const { data: players } = await admin

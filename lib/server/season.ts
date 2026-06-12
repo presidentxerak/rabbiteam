@@ -138,7 +138,7 @@ export async function startSeason(ctx: IslandCtx, day: string): Promise<void> {
     await postMessage(
       ctx.token,
       ctx.island.slack_channel_id,
-      "🐰 Le Lapin attend des renforts : il faut au moins 4 joueurs actifs pour lancer une saison. Invitez l'équipe avec `/rabbiteam setup` !",
+      "🐰 The Rabbit is waiting for reinforcements: you need at least 4 active players to launch a season. Invite the team with `/rabbiteam setup`!",
     );
     return;
   }
@@ -155,7 +155,7 @@ export async function startSeason(ctx: IslandCtx, day: string): Promise<void> {
     await postMessage(
       ctx.token,
       ctx.island.slack_channel_id,
-      "🐰 Votre saison mensuelle est déjà jouée (plan Free). Passez au plan Team pour une Saison du Lapin chaque semaine → " +
+      "🐰 Your monthly season is already played (Free plan). Upgrade to Team for a Rabbit Season every week → " +
         `${APP_URL()}/#pricing`,
     );
     return;
@@ -211,7 +211,7 @@ export async function startSeason(ctx: IslandCtx, day: string): Promise<void> {
     await postMessage(
       ctx.token,
       ctx.island.slack_channel_id,
-      "🐰 Personne n'a posé d'intention la semaine passée — le Lapin reste au terrier. Faites vos standups, la saison reprend lundi prochain !",
+      "🐰 No one dropped an intention last week — the Rabbit stays in the burrow. Do your standups, the season resumes next Monday!",
     );
     return;
   }
@@ -294,7 +294,7 @@ export async function startSeason(ctx: IslandCtx, day: string): Promise<void> {
   await postMessage(
     ctx.token,
     ctx.island.slack_channel_id,
-    `🐰 Saison #${seasonsPlayed ?? 1} ouverte. Le Lapin est parmi vous.`,
+    `🐰 Season #${seasonsPlayed ?? 1} is open. The Rabbit is among you.`,
     seasonOpenBlocks(seasonsPlayed ?? 1),
   );
 }
@@ -316,7 +316,7 @@ export async function standupReminder(ctx: IslandCtx, day: string): Promise<void
   await postMessage(
     ctx.token,
     ctx.island.slack_channel_id,
-    "☀️ Standup du jour — 30 secondes, des carottes à la clé.",
+    "☀️ Today's standup — 30 seconds, carrots on the line.",
     standupReminderBlocks(),
   );
 }
@@ -346,20 +346,20 @@ export async function releaseClue(ctx: IslandCtx, day: string, ordinal: 1 | 2 | 
       .eq("ordinal", ordinal);
     const extra =
       ordinal === 3
-        ? "\n\n🕵️ Demain 11h : le vote. Le Lapin a-t-il accompli ses missions ?"
+        ? "\n\n🕵️ Tomorrow 11am: the vote. Did the Rabbit complete its missions?"
         : "";
     await postMessage(
       ctx.token,
       ctx.island.slack_channel_id,
-      `🔍 Indice n°${ordinal} — ${clue.content}${extra}`,
+      `🔍 Clue #${ordinal} — ${clue.content}${extra}`,
       clueBlocks(ordinal, clue.content + extra, 0),
     );
   } else {
-    // Indice payant : pas de publication du contenu, annonce de disponibilité.
+    // Paid clue: don't publish the content, just announce availability.
     await postMessage(
       ctx.token,
       ctx.island.slack_channel_id,
-      `🔍 Un indice est disponible au terrier (${clue.price} 🥕). /rabbiteam clue`,
+      `🔍 A clue is available at the burrow (${clue.price} 🥕). /rabbiteam clue`,
       clueBlocks(ordinal, null, clue.price),
     );
   }
@@ -391,7 +391,7 @@ export async function checkSleepingRabbit(ctx: IslandCtx, day: string): Promise<
     await postMessage(
       ctx.token,
       ctx.island.slack_channel_id,
-      "😴 Le Lapin s'est endormi dans son terrier. Saison blanche — rendez-vous lundi pour une nouvelle saison. 🐰",
+      "😴 The Rabbit fell asleep in its burrow. Blank season — see you Monday for a fresh one. 🐰",
     );
   }
 }
@@ -408,7 +408,7 @@ export async function openVoting(ctx: IslandCtx, day: string): Promise<void> {
   await postMessage(
     ctx.token,
     ctx.island.slack_channel_id,
-    "🗳️ Le terrier est ouvert : qui est le Lapin ? Vote jusqu'à 16h.",
+    "🗳️ The burrow is open: who is the Rabbit? Vote until 4pm.",
     votingOpenBlocks(`${APP_URL()}/island/${ctx.island.slug}`),
   );
   await broadcastToIsland(ctx.island.id, "voting_open", { gameId: game.id });
@@ -431,7 +431,7 @@ export async function voteReminder(ctx: IslandCtx, day: string): Promise<void> {
   await postMessage(
     ctx.token,
     ctx.island.slack_channel_id,
-    `⏰ Dernière demi-heure pour voter : ${mentions} — \`/rabbiteam vote\``,
+    `⏰ Last half hour to vote: ${mentions} — \`/rabbiteam vote\``,
   );
 }
 
@@ -470,7 +470,7 @@ export async function closeAndScore(ctx: IslandCtx, day: string): Promise<void> 
   await postMessage(
     ctx.token,
     ctx.island.slack_channel_id,
-    "🗳️ Les votes sont clos. Dépouillement en cours… Révélation à 16h30. 🐰",
+    "🗳️ Voting is closed. Counting the ballots… Reveal at 4:30pm. 🐰",
   );
 }
 
@@ -520,13 +520,13 @@ export async function reveal(ctx: IslandCtx, day: string): Promise<void> {
       actor_player_id: rabbit.id,
       payload: { game_id: game.id },
     });
-    if (rare) await announceDrop(ctx.token, ctx.island.slack_channel_id, rabbit.display_name, rare, "victoire du Lapin 🐰");
+    if (rare) await announceDrop(ctx.token, ctx.island.slack_channel_id, rabbit.display_name, rare, "Rabbit victory 🐰");
   } else if (result === "detectives_win") {
     const detectives = players.filter((p) => p.id !== rabbitId);
     const lucky = detectives[Math.floor(Math.random() * detectives.length)];
     if (lucky) {
       const rare = await grantRandomItem(lucky, "rare", "detectives_win");
-      if (rare) await announceDrop(ctx.token, ctx.island.slack_channel_id, lucky.display_name, rare, "victoire des Détectives 🔍");
+      if (rare) await announceDrop(ctx.token, ctx.island.slack_channel_id, lucky.display_name, rare, "Detectives' victory 🔍");
     }
     await grantItemToIsland(ctx.island.id, "house_garland");
     await admin.from("island_events").insert({
@@ -546,34 +546,34 @@ export async function reveal(ctx: IslandCtx, day: string): Promise<void> {
 
   // --- Séquence dramatique en 3 messages espacés de 30 s ---
   const nowS = Math.floor(Date.now() / 1000);
-  await postMessage(ctx.token, ctx.island.slack_channel_id, "🥁 Les votes sont comptés…");
+  await postMessage(ctx.token, ctx.island.slack_channel_id, "🥁 The votes are in…");
   const accusedText = topSuspect
-    ? `L'équipe désigne : *${topSuspect.display_name}* (${topCount} voix)`
-    : "Aucune majorité ne se dégage… le doute plane.";
+    ? `The team points at: *${topSuspect.display_name}* (${topCount} votes)`
+    : "No majority emerges… doubt lingers.";
   await scheduleMessage(ctx.token, ctx.island.slack_channel_id, nowS + 30, accusedText);
 
   const verdictText =
     result === "rabbit_win"
-      ? `🐰 *Le Lapin s'est échappé !* C'était *${rabbit?.display_name ?? "?"}*. Missions accomplies sous vos yeux.`
+      ? `🐰 *The Rabbit escaped!* It was *${rabbit?.display_name ?? "?"}*. Missions pulled off right under your noses.`
       : result === "detectives_win"
-        ? `🔍 *Démasqué !* Le Lapin était bien *${rabbit?.display_name ?? "?"}*. Bravo les détectives.`
-        : `😶 *Match nul.* Le Lapin (*${rabbit?.display_name ?? "?"}*) a échappé au vote… mais s'est trop caché. Pas de butin.`;
+        ? `🔍 *Unmasked!* The Rabbit was indeed *${rabbit?.display_name ?? "?"}*. Well done, detectives.`
+        : `😶 *Draw.* The Rabbit (*${rabbit?.display_name ?? "?"}*) escaped the vote… but hid too much. No loot.`;
   const cardUrl = `${APP_URL()}/api/og/reveal/${game.id}`;
   const islandUrl = `${APP_URL()}/i/${ctx.island.slug}`;
   await scheduleMessage(ctx.token, ctx.island.slack_channel_id, nowS + 60, verdictText, [
     section(verdictText),
-    { type: "image", image_url: cardUrl, alt_text: "Carte de Révélation Rabbiteam" },
+    { type: "image", image_url: cardUrl, alt_text: "Rabbiteam Reveal Card" },
     actionsBlock(
-      linkButton("Voir la cérémonie 🏝️", `${APP_URL()}/island/${ctx.island.slug}`),
-      linkButton("Partager 📤", islandUrl),
+      linkButton("Watch the ceremony 🏝️", `${APP_URL()}/island/${ctx.island.slug}`),
+      linkButton("Share 📤", islandUrl),
     ),
-    contextBlock(`Votre équipe résisterait au Lapin ? ${islandUrl}`),
+    contextBlock(`Would your team survive the Rabbit? ${islandUrl}`),
   ]);
   await scheduleMessage(
     ctx.token,
     ctx.island.slack_channel_id,
     nowS + 90,
-    "Prochaine saison lundi 9h. 🐰",
+    "Next season Monday 9am. 🐰",
   );
 
   // --- Cérémonie 3D en Realtime ---

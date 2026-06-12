@@ -132,23 +132,23 @@ export async function GET(
   if (game.result === "rabbit_win") {
     stat =
       top - rabbitVotes <= 1 && top > 0
-        ? `Le Lapin a survécu à ${rabbitVotes} voix — il s'en est fallu d'un cheveu de carotte`
-        : `${votes?.length ?? 0} votes, zéro flair : le Lapin est passé entre les mailles`;
+        ? `The Rabbit survived ${rabbitVotes} votes — by a carrot's whisker`
+        : `${votes?.length ?? 0} votes, zero flair: the Rabbit slipped through`;
   } else if (game.result === "detectives_win") {
     stat =
       top - second <= 1
-        ? `Démasqué à ${top} voix contre ${second} — un finish au photo-finish`
-        : `${top} voix contre lui : l'équipe avait du flair`;
+        ? `Unmasked ${top} votes to ${second} — a photo finish`
+        : `${top} votes against them: the team had a nose for it`;
   } else {
-    stat = "Le Lapin s'est tellement caché qu'il en a oublié ses missions";
+    stat = "The Rabbit hid so well it forgot its own missions";
   }
 
   const verdict =
     game.result === "rabbit_win"
-      ? "🐰 Le Lapin s'est échappé !"
+      ? "🐰 The Rabbit escaped!"
       : game.result === "detectives_win"
-        ? "🔍 Démasqué !"
-        : "😶 Match nul";
+        ? "🔍 Unmasked!"
+        : "😶 Draw";
   const bg =
     game.result === "rabbit_win" ? "#FFF3E2" : game.result === "detectives_win" ? "#E2F3FF" : "#F0EDF5";
   const traits = deriveRabbit(rabbit?.avatar_seed ?? 0);
@@ -168,19 +168,19 @@ export async function GET(
       >
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", flex: 1 }}>
           <div style={{ fontSize: 28, color: "#7A6F86", display: "flex" }}>
-            Saison du Lapin · {island?.name ?? "Rabbiteam"}
+            Rabbit Season · {island?.name ?? "Rabbiteam"}
           </div>
           <div style={{ fontSize: 72, fontWeight: 800, color: "#3A3340", marginTop: 12, display: "flex" }}>
             {verdict}
           </div>
           <div style={{ fontSize: 34, color: "#3A3340", marginTop: 24, display: "flex" }}>
-            Le Lapin était {rabbit?.display_name ?? "?"}
+            The Rabbit was {rabbit?.display_name ?? "?"}
           </div>
           <div style={{ fontSize: 26, color: "#7A6F86", marginTop: 18, maxWidth: 620, display: "flex" }}>
             {stat}
           </div>
           <div style={{ fontSize: 26, color: "#3A3340", marginTop: 48, display: "flex" }}>
-            {appHost}/i/{island?.slug ?? ""} — Votre équipe résisterait au Lapin ?
+            {appHost}/i/{island?.slug ?? ""} — Would your team survive the Rabbit?
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>

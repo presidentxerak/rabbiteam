@@ -199,11 +199,76 @@ a {
   max-width: 640px;
   margin: 0 auto 32px;
 }
+/* Hackathon badge */
+.hackathon-badge {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--cream);
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+}
+
+/* Hero 3D rabbit + Rabbiteam 3D type */
+.hero-rabbit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.logo3d {
+  font-size: clamp(46px, 11vw, 104px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+  color: #fff;
+  background: linear-gradient(180deg, #ffb3a3 0%, #ff8c7a 55%, #e2574c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* extrusion 3D simulée par empilement d'ombres */
+  filter: drop-shadow(0 2px 0 #c9463c) drop-shadow(0 4px 0 #b23c33)
+    drop-shadow(0 8px 14px rgba(58, 51, 64, 0.35));
+  transform: rotate(-2deg);
+  line-height: 1;
+}
+.hero-rabbit-stage {
+  width: min(260px, 70vw);
+  height: min(220px, 58vw);
+  touch-action: none;
+}
+
+/* How it works */
+.how {
+  margin: 40px 0 8px;
+}
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--coral);
+  color: #fff;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
 .features {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
-  margin: 56px 0;
+  margin: 40px 0;
 }
 .pricing {
   display: grid;
@@ -248,5 +313,68 @@ a {
   to {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 720px) {
+  .landing {
+    padding: 24px 14px 72px;
+  }
+  .hero {
+    padding: 28px 16px 24px;
+    border-radius: 24px;
+  }
+  .hero h1 {
+    margin: 12px 0;
+  }
+  .hero p.sub {
+    font-size: 17px;
+  }
+  .btn {
+    padding: 13px 22px;
+    font-size: 16px;
+  }
+  .card {
+    padding: 22px;
+  }
+  /* Panneau d'île : pleine largeur en bas sur mobile, plus lisible */
+  .island-panel {
+    top: auto;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-height: 45vh;
+  }
+  .island-panel.collapsed {
+    right: auto;
+  }
+  .vote-banner {
+    bottom: auto;
+    top: 12px;
+    font-size: 14px;
+    padding: 8px 16px;
+    max-width: calc(100vw - 24px);
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero h1 {
+    font-size: 30px;
+  }
+  .logo3d {
+    filter: drop-shadow(0 2px 0 #c9463c) drop-shadow(0 4px 10px rgba(58, 51, 64, 0.3));
+  }
+}
+
+/* Respecte les préférences de réduction de mouvement */
+@media (prefers-reduced-motion: reduce) {
+  .rabbit-stage,
+  .btn {
+    animation: none;
+    transition: none;
   }
 }

@@ -36,7 +36,7 @@ export default function JoinClient(props: {
       if (!sessionData.session) {
         const { error: signInError } = await supabase.auth.signInAnonymously();
         if (signInError) {
-          setError("Impossible de créer ta session. Réessaie dans un instant.");
+          setError("Couldn't create your session. Please try again in a moment.");
           return;
         }
       }
@@ -44,22 +44,22 @@ export default function JoinClient(props: {
       if (res.ok && res.slug) {
         router.push(`/island/${res.slug}`);
       } else if (res.error === "already_linked") {
-        setError("Ce lapin a déjà été adopté depuis un autre navigateur. Si c'est toi, ouvre l'île depuis ce navigateur-là.");
+        setError("This rabbit was already adopted from another browser. If that was you, open the island from that browser.");
       } else {
-        setError("Le terrier est introuvable. Redemande un lien dans Slack.");
+        setError("Burrow not found. Ask for a fresh link in Slack.");
       }
     });
   }
 
   return (
     <main className="join-page">
-      <span className="tag">Île {props.islandName}</span>
+      <span className="tag">{props.islandName} island</span>
       <h1>
-        {props.displayName}, voici ton lapin. 🐰
+        {props.displayName}, meet your rabbit. 🐰
       </h1>
       <p style={{ color: "var(--ink-soft)", maxWidth: 480 }}>
-        Il est né de ton arrivée sur l&apos;île — unique au monde, calculé pour toujours. Personne
-        d&apos;autre n&apos;a le même.
+        Born the moment you joined the island — one of a kind, computed forever. No one else has the
+        same one.
       </p>
       <div className="rabbit-stage">
         <Canvas camera={{ position: [0, 0.8, 2.2], fov: 40 }}>
@@ -74,7 +74,7 @@ export default function JoinClient(props: {
       </div>
       <div style={{ marginTop: 24 }}>
         <button className="btn btn-primary" onClick={adopt} disabled={pending}>
-          {pending ? "Adoption en cours…" : "C'est mon lapin ! 🥕"}
+          {pending ? "Adopting…" : "This is my rabbit! 🥕"}
         </button>
       </div>
       {error && <p style={{ color: "var(--coral-deep)" }}>{error}</p>}

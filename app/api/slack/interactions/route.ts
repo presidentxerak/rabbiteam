@@ -181,7 +181,7 @@ async function processBlockAction(teamId: string, interaction: SlackInteraction)
     case "unlock_clue": {
       // Bouton du canal : on renvoie vers la commande dédiée (achat explicite).
       await postEphemeral(ctx.token, ctx.island.slack_channel_id, interaction.user.id,
-        `Pour débloquer : \`/rabbiteam debloquer ${action.value ?? 2}\` 🥕`);
+        `Pour débloquer : \`/rabbiteam unlock ${action.value ?? 2}\` 🥕`);
       return;
     }
   }

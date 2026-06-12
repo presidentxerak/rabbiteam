@@ -49,15 +49,16 @@ export async function POST(req: Request): Promise<NextResponse> {
       switch (sub.toLowerCase()) {
         case "setup": return await handleSetup(ctx, cmd);
         case "standup": return await handleStandup(ctx, cmd);
-        case "indice": return await handleIndice(ctx, cmd);
+        // Sous-commandes en anglais, alias français conservés.
+        case "clue": case "clues": case "indice": return await handleIndice(ctx, cmd);
+        case "unlock": case "debloquer": case "débloquer": return await handleDebloquer(ctx, cmd);
         case "vote": return await handleVote(ctx, cmd);
-        case "debloquer": case "débloquer": return await handleDebloquer(ctx, cmd);
-        case "ile": case "île": return await handleIle(ctx, cmd);
-        case "inviter": return await handleInviter(ctx, cmd);
+        case "island": case "ile": case "île": return await handleIle(ctx, cmd);
+        case "invite": case "inviter": return await handleInviter(ctx, cmd);
         default:
           return await respond(
             cmd.response_url,
-            "🐰 *Commandes* : `/rabbiteam setup #canal` · `standup` · `indice` · `vote` · `ile` · `inviter`",
+            "🐰 *Commandes* : `/rabbiteam setup #canal` · `standup` · `clue` · `unlock <n>` · `vote` · `island` · `invite`",
           );
       }
     } catch (e) {
@@ -191,7 +192,7 @@ async function handleIndice(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
       lines.push(`• Indice n°${ordinal} — ${c.content}`);
       any = true;
     } else if (c.tier === "paid") {
-      lines.push(`• Indice n°${ordinal} — 🔒 à débloquer (${c.price} 🥕) : \`/rabbiteam debloquer ${ordinal}\` ou via l'île web`);
+      lines.push(`• Indice n°${ordinal} — 🔒 à débloquer (${c.price} 🥕) : \`/rabbiteam unlock ${ordinal}\` ou via l'île web`);
       any = true;
     }
   }

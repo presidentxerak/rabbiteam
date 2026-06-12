@@ -359,7 +359,7 @@ export async function releaseClue(ctx: IslandCtx, day: string, ordinal: 1 | 2 | 
     await postMessage(
       ctx.token,
       ctx.island.slack_channel_id,
-      `🔍 Un indice est disponible au terrier (${clue.price} 🥕). /rabbiteam indice`,
+      `🔍 Un indice est disponible au terrier (${clue.price} 🥕). /rabbiteam clue`,
       clueBlocks(ordinal, null, clue.price),
     );
   }

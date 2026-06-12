@@ -127,10 +127,15 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
       {/* ===== A week with the Rabbit (full walkthrough) ===== */}
       <section className="week">
         <h2 style={{ textAlign: "center", fontSize: 32 }}>A week with the Rabbit, hour by hour</h2>
-        <p className="sub" style={{ margin: "8px auto 28px", textAlign: "center" }}>
-          Everything happens in Slack on your island&apos;s timezone. One automatic dispatcher runs
-          the whole show - nothing for you to schedule.
+        <p className="sub" style={{ margin: "8px auto 16px", textAlign: "center" }}>
+          This is the natural weekly rhythm, all in Slack on your island&apos;s timezone. One
+          automatic dispatcher runs the whole show - nothing for you to schedule.
         </p>
+        <div className="instant-callout">
+          <strong>Don&apos;t want to wait for Monday?</strong> Type{" "}
+          <code>/rabbiteam demo</code> and a full season starts <em>right now</em> — players, clues,
+          and an open vote, ready to play in seconds.
+        </div>
         <div className="timeline">
           {WEEK.map((s, i) => (
             <div key={i} className="tl-row">

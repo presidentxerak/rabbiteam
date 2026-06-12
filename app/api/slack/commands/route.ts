@@ -96,14 +96,19 @@ async function handleSetup(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
     .single<{ plan: "free" | "team" | "company" }>();
   const plan = org?.plan ?? "free";
 
+  // Liste des membres du canal (best-effort : échoue si le bot n'est pas dans
+  // le canal). On AJOUTE TOUJOURS la personne qui lance la commande, pour
+  // qu'elle devienne joueuse et reçoive son lien magique même si la liste rate.
   const members = await getChannelMembers(ctx.token, channelId);
+  const rosterEmpty = members.length === 0;
+  const toAdd = Array.from(new Set([cmd.user_id, ...members]));
+
   let created = 0;
   let skipped = 0;
-  for (const slackUserId of members) {
+  for (const slackUserId of toAdd) {
     const info = await getUserInfo(ctx.token, slackUserId);
     if (!info || info.isBot) continue;
-    const existing = await resolvePlayer(ctx.island.id, slackUserId);
-    if (existing) continue;
+    if (await resolvePlayer(ctx.island.id, slackUserId)) continue;
 
     const { count } = await admin
       .from("players")
@@ -134,7 +139,7 @@ async function handleSetup(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
     await postDM(
       ctx.token,
       slackUserId,
-      `🐰 Welcome to the *${ctx.island.name}* island! Meet your rabbit (already born, waiting for you): ${link}`,
+      `🐰 Welcome to the *${ctx.island.name}* island! Open your rabbit (and sign in) here: ${link}`,
     );
   }
 
@@ -144,9 +149,12 @@ async function handleSetup(ctx: SlackCtx, cmd: SlackCommand): Promise<void> {
   const skippedNote = skipped > 0
     ? `\n⚠️ ${skipped} member(s) not added (Free plan limit: 8 players). → ${APP_URL()}/#pricing`
     : "";
+  const rosterNote = rosterEmpty
+    ? "\n💡 I couldn't read the channel roster (invite me to the channel with `/invite @Rabbiteam` to auto-add everyone). For now I added you."
+    : "";
   await respond(
     cmd.response_url,
-    `🏝️ Channel <#${channelId}> configured. ${created} rabbit(s) invited by DM.${skippedNote}\nThe first Rabbit Season starts Monday 9am.`,
+    `🏝️ Channel <#${channelId}> configured. ${created} rabbit(s) invited by DM (check your DMs for your magic link).${skippedNote}${rosterNote}\nThen run \`/rabbiteam demo\` to start a season now.`,
   );
 }
 

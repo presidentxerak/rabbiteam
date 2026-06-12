@@ -82,6 +82,9 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
           <a className="btn btn-ghost" href="#how">
             How does it work?
           </a>
+          <a className="btn btn-ghost" href="/demo">
+            Explore the island
+          </a>
         </div>
         {ref && (
           <p style={{ marginTop: 16, color: "var(--ink-soft)" }}>

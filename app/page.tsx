@@ -2,6 +2,8 @@
  * Landing marketing. Capture du parrainage : /?ref=[island_id] est reporté
  * dans le `state` OAuth Slack (récompense Carotte Dorée au seuil de 5 joueurs).
  */
+import LandingIsland from "@/components/LandingIsland";
+
 type SearchParams = Promise<{ ref?: string; installed?: string; error?: string }>;
 
 function slackInstallUrl(ref?: string): string {
@@ -29,6 +31,7 @@ export default async function LandingPage({ searchParams }: { searchParams: Sear
 
   return (
     <main className="landing">
+      <LandingIsland />
       <header className="hero">
         <span className="tag">🐰 Pour les équipes de 5 à 50 personnes</span>
         <h1>

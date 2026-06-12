@@ -32,12 +32,22 @@ export function verifySlackSignature(opts: {
 
 /** Lit le body brut + headers d'une Request et vérifie. Retourne le body si OK. */
 export async function readVerifiedSlackBody(req: Request): Promise<string | null> {
+  const signingSecret = process.env.SLACK_SIGNING_SECRET;
+  if (!signingSecret) {
+    // Diagnostic explicite : sans ce log, un secret manquant ressemble à
+    // une signature invalide (401 silencieux sur le challenge Slack).
+    console.error("[slack/verify] SLACK_SIGNING_SECRET manquant dans l'environnement");
+    return null;
+  }
   const body = await req.text();
   const ok = verifySlackSignature({
-    signingSecret: process.env.SLACK_SIGNING_SECRET!,
+    signingSecret,
     body,
     timestamp: req.headers.get("x-slack-request-timestamp"),
     signature: req.headers.get("x-slack-signature"),
   });
+  if (!ok) {
+    console.error("[slack/verify] signature invalide ou horodatage hors tolérance");
+  }
   return ok ? body : null;
 }

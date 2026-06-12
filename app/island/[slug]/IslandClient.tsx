@@ -154,6 +154,22 @@ export default function IslandClient(props: IslandClientProps) {
               )}
             </div>
 
+            <h2>Talk to a rabbit</h2>
+            <div style={{ fontSize: 12, color: "var(--ink-soft)", marginBottom: 6 }}>
+              Click a rabbit (here or on the island) to chat and fish for clues.
+            </div>
+            <div className="item-grid">
+              {props.players.map((p) => (
+                <button
+                  key={p.id}
+                  className="item-chip"
+                  onClick={() => setChatPlayer({ id: p.id, name: p.name })}
+                >
+                  🐰 {p.name}
+                </button>
+              ))}
+            </div>
+
             <h2>Season</h2>
             <div className="clue-line">
               {gameStatus === "voting"
